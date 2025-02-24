@@ -1,0 +1,18 @@
+{%for client in clients%}
+    <p>
+        <tr>
+            <td >{{ client.id }}</td>
+            <td >{{ client.name }}</td>
+            <td >{{ client.state }}</td>
+            <td >{{ client.NAICS }}</td>
+            <td >{{ client.urbanrural }}</td>
+            <td >{{ client.lowdoc}}</td>
+            <td >{{ client.bank_loan }}</td>
+            <td >{{ client.sba_loan }}</td>
+            <td >{{ client.franchisecode }}</td>
+            <td >{{ client.revlinecr }}</td>
+            <td >{{ client.term }}</td>
+            <td >{{ client.role}}</td>
+        <tr>
+    </p>
+{% endfor %}

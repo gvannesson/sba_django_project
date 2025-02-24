@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from .models import User
+from .models import User, News
+# from .forms
 from django.views.generic import TemplateView, ListView
 
 class HomeView(TemplateView):
@@ -10,7 +11,16 @@ class HomeView(TemplateView):
 
 class ClientView(ListView):
     model = User
-    template_name = 'sba_website/client_list'
+    template_name = 'sba_website/clients_list.html'
     context_object_name = 'clients'
     def get_queryset(self):
-        return self.res
+        return User.objects.filter(role = 0)
+    
+class NewsView(ListView):
+    model = News
+    template_name = 'sba_website/news_list.html'
+    context_object_name = 'news'
+    def get_queryset(self):
+        return News.objects.all()
+    
+# class Crea

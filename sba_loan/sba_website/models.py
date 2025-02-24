@@ -13,6 +13,14 @@ class User(AbstractUser):
     ]
     urbanrural = models.CharField(max_length=1, choices=URBAN_RURAL_CHOICES, null=True, default='n')
 
+
+    franchisecode = models.CharField(max_length=50, null=True, default='0')
+
+    role = models.IntegerField(null=True, default=0) # 0 = company , 1 = advisor
+
+class LoanRequests(models.Model):
+    name_company = models.CharField(max_length=150, null=True)
+    username = models.CharField(max_length=150, null=True)
     LOW_DOC_CHOICES = [
         ('y', 'Yes'),
         ('n', 'No'),
@@ -21,14 +29,8 @@ class User(AbstractUser):
 
     bank_loan = models.IntegerField(null=True, default=0)
     sba_loan = models.IntegerField(null=True, default=0)
-    franchisecode = models.CharField(max_length=50, null=True, default='0')
     revlinecr = models.CharField(max_length=50, null=True, default='0')
     term = models.IntegerField(null=True, default=0)
-    role = models.IntegerField(null=True, default=0) # 0 = company , 1 = advisor
-
-class LoanRequests(models.Model):
-    name_company = models.CharField(max_length=150, null=True)
-    loan_amount = models.FloatField(default=0)
     date_requests = models.DateField(auto_now=False, auto_now_add=True)
 
 class Message(models.Model):
