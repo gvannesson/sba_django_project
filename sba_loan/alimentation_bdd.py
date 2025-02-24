@@ -12,7 +12,7 @@ from sba_website.models import User  # Assure-toi d'importer ton modèle User
 import pandas as pd
 
 # Charger ton fichier CSV
-df = pd.read_csv('sba_loan/clients_projet_bank.csv')
+df = pd.read_csv('clients_projet_bank.csv')
 
 # Insérer les données dans la base de données (exemple de traitement)
 for index, row in df.iterrows():
@@ -29,6 +29,6 @@ for index, row in df.iterrows():
         franchisecode=row['FranchiseCode'],
         revlinecr=row['RevLineCr'],
         term=row['Term'],
-        is_company= 1,
+        role= 0,
     )
     user.save()  # Enregistrer chaque utilisateur

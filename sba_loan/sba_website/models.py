@@ -24,6 +24,6 @@ class User(AbstractUser):
     franchisecode = models.CharField(max_length=50, null=True, default='0')
     revlinecr = models.CharField(max_length=50, null=True, default='0')
     term = models.IntegerField(null=True, default=0)
-    is_company = models.BooleanField(null=True, default=False)
-    is_advisors = models.BooleanField(null=True, default=False)
+    role = models.IntegerField(null=True, default=0) # 0 = company, 1=advisor
+
 
