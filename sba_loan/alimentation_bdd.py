@@ -29,6 +29,8 @@ for index, row in df.iterrows():
         franchisecode=row['FranchiseCode'],
         revlinecr=row['RevLineCr'],
         term=row['Term'],
-        is_company= 1,
+        role = 0,
     )
     user.save()  # Enregistrer chaque utilisateur
+
+
