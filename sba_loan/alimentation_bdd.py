@@ -32,3 +32,5 @@ for index, row in df.iterrows():
         role= 0,
     )
     user.save()  # Enregistrer chaque utilisateur
+
+

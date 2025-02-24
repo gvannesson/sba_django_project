@@ -16,3 +16,10 @@ class DisplayProfileView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['predictions'] = self.request.user.prediction_set.all().filter(user_id=self.request.user.id) #on rajoute une clé predictions pour savoir s'il y a déjà des prédictions pour ensuite faire apparaître
         return context
+
+class ClientView(ListView):
+    model = User
+    template_name = 'sba_website/client_list'
+    context_object_name = 'clients'
+    def get_queryset(self):
+        return self.res
