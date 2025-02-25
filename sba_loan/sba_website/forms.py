@@ -20,7 +20,7 @@ class LoanRequestForm(forms.ModelForm):
         fields = ['bank_loan', 'reason'] #les champs mis à jour lors de l'update du profil
 
 
-class LoanRequestForm(forms.ModelForm):
+class LoanRequestAdvisorForm(forms.ModelForm):
     class Meta:
         model = LoanRequest
         fields = ['lowdoc', 'sba_loan', 'revlinecr', 'term'] #les champs mis à jour lors de l'update du profil
