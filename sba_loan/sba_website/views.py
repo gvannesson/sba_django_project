@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import User, News
-# from .forms
-from django.views.generic import TemplateView, ListView
+from forms import CreateNews
+from django.views.generic import TemplateView, ListView, View
+from django.urls import reverse_lazy
 
 class HomeView(TemplateView):
     template_name = 'sba_website/home.html'
@@ -22,5 +23,20 @@ class NewsView(ListView):
     context_object_name = 'news'
     def get_queryset(self):
         return News.objects.all()
+
+
+class CreateNewsvView(View):
+    template_name = 'sba_website/create_news.htlm'
+    success_url = reverse_lazy('news_list')
+    def get(self,request):
+        form = CreateNews()
+        return render(request, self.template_name, {'form':form})
     
-# class Crea
+    
+    def post(self, request):
+
+        form = CreateNews(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(self.success_url)
+        return render(request, self.template_name, {'form': form})

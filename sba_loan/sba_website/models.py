@@ -19,13 +19,12 @@ class User(AbstractUser):
     role = models.IntegerField(null=True, default=0) # 0 = company , 1 = advisor
 
 class LoanRequests(models.Model):
-    name_company = models.CharField(max_length=150, null=True)
-    username = models.CharField(max_length=150, null=True)
+
     LOW_DOC_CHOICES = [
         ('y', 'Yes'),
         ('n', 'No'),
     ]
-    lowdoc = models.CharField(max_length=1, choices=LOW_DOC_CHOICES, null=True, default='n')
+    lowdoc = models.CharField(max_length=1, choices=LOW_DOC_CHOICES, null=True)
 
     bank_loan = models.IntegerField(null=True, default=0)
     sba_loan = models.IntegerField(null=True, default=0)
@@ -41,6 +40,7 @@ class Message(models.Model):
 class News(models.Model):
     items = models.CharField("Name", max_length=250, blank=True)
     date_news = models.DateTimeField(null=True)
+    content = models.TextField()
     news_url = models.URLField(max_length=200)
 
     def __str__(self):
