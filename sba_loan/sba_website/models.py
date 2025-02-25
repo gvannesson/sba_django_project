@@ -20,6 +20,7 @@ class User(AbstractUser):
 
 class LoanRequests(models.Model):
 
+    
     LOW_DOC_CHOICES = [
         ('y', 'Yes'),
         ('n', 'No'),

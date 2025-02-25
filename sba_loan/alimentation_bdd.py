@@ -19,10 +19,11 @@ hasher = PBKDF2PasswordHasher()
 df = pd.read_csv('clients_projet_bank.csv')
 
 # Insérer les données dans la base de données (exemple de traitement)
+i = 0
 for index, row in df.iterrows():
     # Hacher le mot de passe 'azerty' pour chaque utilisateur
     hashed_password = hasher.encode('azerty', hasher.salt())
-
+    
     user = User(
         username=row['LoanNr_ChkDgt'],  # Assure-toi que la colonne 'username' existe dans ton CSV
         password=hashed_password,  # Utiliser le mot de passe haché
@@ -36,8 +37,7 @@ for index, row in df.iterrows():
     )
 
     loan_request = LoanRequests(
-        name_company = row['Name'],
-        username=row['LoanNr_ChkDgt'], 
+        id_user = i,
         bank_loan=row['bank_loan_float'],
         sba_loan=row['SBA_loan_float'],
         lowdoc=row['LowDoc'],
@@ -47,3 +47,4 @@ for index, row in df.iterrows():
     )
     user.save()  # Enregistrer chaque utilisateur
     loan_request.save()
+    i+=1

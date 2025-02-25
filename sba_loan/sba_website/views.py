@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import User, News
-from forms import CreateNews
+from .forms import CreateNews
 from django.views.generic import TemplateView, ListView, View
 from django.urls import reverse_lazy
 
@@ -26,8 +26,8 @@ class NewsView(ListView):
 
 
 class CreateNewsvView(View):
-    template_name = 'sba_website/create_news.htlm'
-    success_url = reverse_lazy('news_list')
+    template_name = 'sba_website/create_news.html'
+    success_url = reverse_lazy('home')
     def get(self,request):
         form = CreateNews()
         return render(request, self.template_name, {'form':form})

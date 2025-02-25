@@ -1,5 +1,4 @@
 from django.urls import path
-from 
 from .views import HomeView,ClientView, NewsView,CreateNewsvView
 
 
