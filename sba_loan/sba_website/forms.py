@@ -25,3 +25,7 @@ class LoanRequestAdvisorForm(forms.ModelForm):
         model = LoanRequest
         fields = ['lowdoc', 'sba_loan', 'revlinecr', 'term'] #les champs mis à jour lors de l'update du profil
 
+class SelectLoanRequest(forms.Form):
+    search_by_company_name = forms.ModelChoiceField(label="Company name", queryset=User.objects.all() , required=False)
+    search_by_amount = forms.IntegerField(label="Amount", required=False)
+    search_by_status = forms.IntegerField(label="Status", required=False)

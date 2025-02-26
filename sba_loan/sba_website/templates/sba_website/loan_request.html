@@ -1,0 +1,11 @@
+<h2 class="my-3 text-center text-3xl font-bold tracking-tight text-gray-900">
+    Sign up for an account
+</h2>
+
+{%block content%}
+<form method="post">
+    {%csrf_token%}
+    {{ form.as_p}}
+    <button type='submit'>Register</button>
+</form>
+{%endblock%}

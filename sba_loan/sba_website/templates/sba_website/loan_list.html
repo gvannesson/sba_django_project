@@ -1,0 +1,20 @@
+{% block content%}
+
+    <h2>Liste des articles</h2>
+
+    <form method="get" action="">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type='submit'>Rechercher</button>
+    </form>
+    
+    <ul>
+        {% for loan in loans %}
+            <li>
+                <a class="btn mt-20" href="/fill_loan_request/<loan.id>">{{loan.company_name}}</a>
+                <p>{{loan.bank_loan}}</p>
+            </li>
+            {%endfor %}
+            
+    </ul>
+{%endblock%}

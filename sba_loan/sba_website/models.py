@@ -14,6 +14,8 @@ class User(AbstractUser):
     franchisecode = models.CharField(max_length=50, null=True, default='0')
     role = models.IntegerField(null=True, default=0) # 0 = company , 1 = advisor
     USERNAME_FIELD = "email"
+    email = models.EmailField(('email address'), unique=True) # changes email to unique and blank to false
+    REQUIRED_FIELDS = []
 
 
 class LoanRequest(models.Model):
@@ -21,14 +23,15 @@ class LoanRequest(models.Model):
     bank_loan = models.IntegerField(null=True, default=0)
     request_date = models.DateField(auto_now_add=True)
     LOW_DOC_CHOICES = [
-        ('y', 'Yes'),
-        ('n', 'No'),
+        ('1', 'Yes'),
+        ('0', 'No'),
     ]
     lowdoc = models.CharField(max_length=1, choices=LOW_DOC_CHOICES, null=True, default='n')
     sba_loan = models.IntegerField(null=True, default=0)
     revlinecr = models.CharField(max_length=50, null=True, default='0')
     term = models.IntegerField(null=True, default=0)
     reason = models.CharField(max_length=500, null=True, default='')
+    status = models.IntegerField(null=True, default=0)
 
 
 class News(models.Model):

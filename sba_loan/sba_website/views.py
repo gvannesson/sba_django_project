@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from .models import User
-from django.views.generic import TemplateView, ListView, CreateView, DeleteView, UpdateView
+from .models import User, LoanRequest
+from django.views.generic import TemplateView, ListView, CreateView, DeleteView, UpdateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CustomCreationForm, AccountChangeForm
+from .forms import CustomCreationForm, AccountChangeForm, LoanRequestAdvisorForm, LoanRequestForm, SelectLoanRequest
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 
@@ -46,3 +46,46 @@ class AccountUpdateView(UpdateView, LoginRequiredMixin):
     form_class=AccountChangeForm
     template_name = 'sba_website/account_update.html'  # Le template à utiliser pour le formulaire
     success_url = reverse_lazy('display_profile')  # L'URL vers laquelle rediriger après la mise à jour réussie
+
+
+class CreateLoanRequestView(CreateView):
+    model = LoanRequest #spécifie le modèle
+    form_class = LoanRequestForm
+    template_name = 'sba_website/loan_request.html' #spécifie le template
+    success_url = reverse_lazy('home') #redirection après la création
+
+    def post(self, request, *args, **kwargs):
+        print(type(request.user))
+        newrequest = LoanRequest()
+        print(request.user.id)
+        newrequest.user_id = User
+        print("#########################")
+        print(newrequest.user_id)
+        newrequest.bank_loan = request.POST.get("bank_loan")
+        newrequest.reason = request.POST.get("reason")
+        newrequest.save()
+        return super().post(request, *args, **kwargs)
+
+class FillLoanRequestView(UpdateView):
+    model = LoanRequest #spécifie le modèle
+    form_class = LoanRequestAdvisorForm
+    template_name = 'sba_website/loan_filling.html' #spécifie le template
+    success_url = reverse_lazy('home') #redirection après la création
+
+
+class LoanListViews(ListView, FormView):
+    model = LoanRequest #spécifie le modèle
+    form_class = SelectLoanRequest
+    template_name = 'sba_website/loan_list.html' #spécifie le template
+    context_object_name='loans' #le nom utilisé dans le template
+
+    def get_queryset(self):
+        query_company = self.request.GET.get('search_by_company_name')
+        query_amount = self.request.GET.get('search_by_amount')
+        query_status = self.request.GET.get('search_by_status')
+        result = LoanRequest.objects.all()
+        if query_company:
+            result =  LoanRequest.objects.filter(user_id= User.objects.get(company_name=query_company))
+        if query_amount:
+            result = result.filter(bank_loan=query_amount)
+        return result
