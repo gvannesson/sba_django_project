@@ -11,7 +11,10 @@
     <ul>
         {% for loan in loans %}
             <li>
-                <a class="btn mt-20" href="/fill_loan_request/<loan.id>">{{loan.company_name}}</a>
+                <a class="btn mt-20" href="/loan_filling/{{loan.id}}">{{loan.reason}}</a>
+                {% if loan.status == 2 %}
+                    <a href="URL OF THE API">Predict</a>
+                {% endif %}
                 <p>{{loan.bank_loan}}</p>
             </li>
             {%endfor %}

@@ -3,6 +3,10 @@
 </h2>
 
 {%block content%}
+<p>Bonjour {{user.email}}</p>
+<p>Bonjour {{user.id}}</p>
+<p>Bonjour {{user}}</p>
+<p>Bonjour {{user.company_name}}</p>
 <form method="post">
     {%csrf_token%}
     {{ form.as_p}}

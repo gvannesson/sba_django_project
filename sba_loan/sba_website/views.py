@@ -5,6 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CustomCreationForm, AccountChangeForm, LoanRequestAdvisorForm, LoanRequestForm, SelectLoanRequest
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import JsonResponse
+import json
+from django.shortcuts import redirect
 
 class HomeView(TemplateView):
     template_name = 'sba_website/home.html'
@@ -45,7 +48,7 @@ class AccountUpdateView(UpdateView, LoginRequiredMixin):
     model = User  # Le modèle que l'on souhaite mettre à jour
     form_class=AccountChangeForm
     template_name = 'sba_website/account_update.html'  # Le template à utiliser pour le formulaire
-    success_url = reverse_lazy('display_profile')  # L'URL vers laquelle rediriger après la mise à jour réussie
+    success_url = reverse_lazy('home')  # L'URL vers laquelle rediriger après la mise à jour réussie
 
 
 class CreateLoanRequestView(CreateView):
@@ -55,22 +58,31 @@ class CreateLoanRequestView(CreateView):
     success_url = reverse_lazy('home') #redirection après la création
 
     def post(self, request, *args, **kwargs):
-        print(type(request.user))
+
+        # user = User.objects.get(id = request.user.id)
+
+        # print(user.__dict__)
+        # print()
         newrequest = LoanRequest()
-        print(request.user.id)
-        newrequest.user_id = User
-        print("#########################")
-        print(newrequest.user_id)
+        newrequest.user_id = request.user
         newrequest.bank_loan = request.POST.get("bank_loan")
         newrequest.reason = request.POST.get("reason")
         newrequest.save()
-        return super().post(request, *args, **kwargs)
+        return redirect('/')
+    
 
 class FillLoanRequestView(UpdateView):
     model = LoanRequest #spécifie le modèle
     form_class = LoanRequestAdvisorForm
     template_name = 'sba_website/loan_filling.html' #spécifie le template
     success_url = reverse_lazy('home') #redirection après la création
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        loan_request = self.get_object()
+        loan_request.status = 2
+        loan_request.save()
+        return response
 
 
 class LoanListViews(ListView, FormView):
@@ -85,7 +97,20 @@ class LoanListViews(ListView, FormView):
         query_status = self.request.GET.get('search_by_status')
         result = LoanRequest.objects.all()
         if query_company:
-            result =  LoanRequest.objects.filter(user_id= User.objects.get(company_name=query_company))
+            result =  result.filter(user_id= User.objects.get(company_name=query_company).id)
         if query_amount:
             result = result.filter(bank_loan=query_amount)
+        if query_status:
+            result = result.filter(status=query_status)
         return result
+
+    def post(self, request, *args, **kwargs):
+        
+        return super().post(request, *args, **kwargs)
+
+# class PredictView(TemplateView):
+#     template_name = 'sba_website/prediction.html'
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['prediction'] = LoanRequest.objects.all().filter(status=2) #on rajoute une clé predictions pour savoir s'il y a déjà des prédictions pour ensuite faire apparaître
+#         return context

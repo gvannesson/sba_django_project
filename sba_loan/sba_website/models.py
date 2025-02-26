@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
-    company_name = models.CharField("Name", max_length=250, blank=True)
+    company_name = models.CharField("Company Name", max_length=250, blank=True)
     phone_number = models.CharField(max_length=10, blank=True)
     state = models.CharField(max_length=100, blank=True)
     NAICS = models.CharField(max_length=100, blank=True)
@@ -13,6 +13,7 @@ class User(AbstractUser):
     urbanrural = models.CharField(max_length=1, choices=URBAN_RURAL_CHOICES, null=True, default='n')
     franchisecode = models.CharField(max_length=50, null=True, default='0')
     role = models.IntegerField(null=True, default=0) # 0 = company , 1 = advisor
+    username = models.CharField(max_length=100,blank=True)
     USERNAME_FIELD = "email"
     email = models.EmailField(('email address'), unique=True) # changes email to unique and blank to false
     REQUIRED_FIELDS = []
@@ -44,6 +45,9 @@ class News(models.Model):
         return self.news_url  # Retourne l'URL des actualités
 
 
+
+class Token(models.Model):
+    token = models.CharField("Token", max_length=250, blank=True)
 
 '''
 class User(AbstractUser):
