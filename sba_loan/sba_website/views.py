@@ -105,7 +105,18 @@ class LoanListViews(ListView, FormView):
         return result
 
     def post(self, request, *args, **kwargs):
-        
+        return JsonResponse({
+                "state": "FL",
+                "term": 120,
+                "no_emp": 150,
+                "urban_rural": 0,
+                "cat_activities": 42,
+                "bank_loan_float": 120000,
+                "sba_loan_float": 100000,
+                "franchise_code": 0,
+                "lowdoc": True,
+                "bank": "NEW JERSEY ECONOMIC DEVEL"
+                })
         return super().post(request, *args, **kwargs)
 
 # class PredictView(TemplateView):
