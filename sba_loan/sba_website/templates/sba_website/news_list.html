@@ -5,7 +5,13 @@
             <td >{{ new.items }}</td>
             <td >{{ new.date_news }}</td>
             <td >{{ new.news_url }}</td>
-
+            <td>{{new.user_id_id}}</td>
+            <td>
+                <a href="{% url 'delete_news' new.id %}" class="btn btn-danger">Supprimer</a>
+            </td>
+            <td>
+                <a href="{% url 'news_update' new.id %}" class="btn btn-danger">Modifier</a>
+            </td>
         <tr>
     </p>
 {% endfor %}

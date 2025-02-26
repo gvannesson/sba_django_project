@@ -2,17 +2,18 @@
     <p>
         <tr>
             <td >{{ client.id }}</td>
-            <td >{{ client.name }}</td>
+            <td >{{ client.company_name }}</td>
             <td >{{ client.state }}</td>
             <td >{{ client.NAICS }}</td>
-            <td >{{ client.urbanrural }}</td>
-            <td >{{ client.lowdoc}}</td>
-            <td >{{ client.bank_loan }}</td>
-            <td >{{ client.sba_loan }}</td>
+            <td >{{ client.email }}</td>
+
             <td >{{ client.franchisecode }}</td>
-            <td >{{ client.revlinecr }}</td>
-            <td >{{ client.term }}</td>
             <td >{{ client.role}}</td>
+            <td>
+                <a href="{% url 'delete_user' client.id %}" class="btn btn-danger">Supprimer</a>
+            </td>            <td>
+                <a href="{% url 'account_update' client.id %}" class="btn btn-danger">Modifier</a>
+            </td>
         <tr>
     </p>
 {% endfor %}

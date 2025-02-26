@@ -173,3 +173,8 @@ cython_debug/
 **/migrations/
 
 **/staticfiles
+
+#pycache
+__pycache__/
+*.pyc
+.pyc

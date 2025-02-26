@@ -1,0 +1,10 @@
+<h>modifier la news avec l'id {{news.id}} sur le sujet {{news.topic}}</h>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+    <td>
+        <a href="{% url 'news_list' %}" class="btn btn-danger">annuler</a>
+    </td>
+</form>

@@ -1,6 +1,12 @@
 <h>Créer une news</h>
+
+<p>création de l'article par {{user.email}} </p>
+<p>création de l'article par {{user.id}} </p>
 <form action="" method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit">
+    <td>
+        <a href="{% url 'home'%}" class="btn btn-danger">Cancel</a>
+    </td>
 </form>
