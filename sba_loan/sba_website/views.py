@@ -8,6 +8,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
 import json
 from django.shortcuts import redirect
+import api_handler
 
 class HomeView(TemplateView):
     template_name = 'sba_website/home.html'
@@ -119,6 +120,28 @@ class LoanListViews(ListView, FormView):
                 })
         return super().post(request, *args, **kwargs)
 
+class APITestView(TemplateView):
+    template_name = "sba_website/api_test.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = {
+                    "state": "NJ",
+                    "term": 45,
+                    "no_emp": 45,
+                    "urban_rural": 0,
+                    "cat_activities": 0,
+                    "bank_loan_float": 600000.0,
+                    "sba_loan_float": 499998.0,
+                    "franchise_code": 0,
+                    "lowdoc": False,
+                    "bank": "NEW JERSEY ECONOMIC DEVEL"
+                    }
+       
+        context["prediction"] =  api_handler.make_prediction(data)
+        return context
+
+    
 # class PredictView(TemplateView):
 #     template_name = 'sba_website/prediction.html'
 #     def get_context_data(self, **kwargs):
