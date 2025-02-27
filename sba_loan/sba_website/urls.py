@@ -20,6 +20,6 @@ urlpatterns = [
     path('loan_list/', LoanListViews.as_view(), name='select_loan_request'),
     path('loan_request/', CreateLoanRequestView.as_view(), name='create_loan_request'),
     path('loan_filling/<int:pk>/', FillLoanRequestView.as_view(), name='fill_loan_request'),
-    path('api_test/', APITestView.as_view(), name="api_test")
+    path('api_test/', APITestView.as_view(), name="api_test"),
     path('delete_news/<int:pk>/', NewsDeleteView.as_view(), name='delete_news'),
 ]
