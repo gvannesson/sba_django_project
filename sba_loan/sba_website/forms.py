@@ -1,7 +1,22 @@
+from django import forms 
+from .models import News
 from django import forms
 from sba_website.models import User, LoanRequest
 from django.contrib.auth.forms import UserCreationForm
 from datetime import date
+
+
+
+class CreateNews(forms.ModelForm):
+    class Meta:
+        model = News
+        fields = ['topic','date_news','content','news_url', 'publication_date']
+        widgets = {'date_news': forms.DateInput(format="%Y-%m-%d", attrs={'type': 'date'})}
+
+class NewsChangeForm(forms.ModelForm):
+    class Meta:
+        model = News
+        fields = ['date_news','news_url','content','topic'] 
 
 
 class CustomCreationForm(UserCreationForm):
