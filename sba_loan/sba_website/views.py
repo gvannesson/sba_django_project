@@ -19,6 +19,8 @@ class HomeView(TemplateView):
 
 # Create your views here.
 
+#region Display
+
 class DisplayProfileView(LoginRequiredMixin, TemplateView):
     template_name='sba_website/profile.html'
     login_url= "/login/"
@@ -27,6 +29,8 @@ class DisplayProfileView(LoginRequiredMixin, TemplateView):
     #     context = super().get_context_data(**kwargs)
     #     context['predictions'] = self.request.user.prediction_set.all().filter(user_id=self.request.user.id) #on rajoute une clé predictions pour savoir s'il y a déjà des prédictions pour ensuite faire apparaître
     #     return context
+
+# region user
 
 class DeleteUserView(SuccessMessageMixin, DeleteView):
     model = User
@@ -48,6 +52,20 @@ class ClientView(ListView):
             return redirect('/profile/') #renvoie sur cet url si l'utilisateur ne remplit pas la condition is_staff
         return super().dispatch(request, *args, **kwargs)
     
+class CreateUserViews(CreateView):
+    model = User #spécifie le modèle
+    form_class = CustomCreationForm
+    template_name = 'sba_website/signup.html' #spécifie le template
+    success_url = reverse_lazy('login') #redirection après la création
+
+class AccountUpdateView(UpdateView, LoginRequiredMixin):
+    model = User  # Le modèle que l'on souhaite mettre à jour
+    form_class=AccountChangeForm
+    template_name = 'sba_website/account_update.html'  # Le template à utiliser pour le formulaire
+    success_url = reverse_lazy('display_profile')  # L'URL vers laquelle rediriger après la mise à jour réussie
+
+#region News
+    
 class NewsView(ListView):
     model = News
     template_name = 'sba_website/news_list.html'
@@ -59,11 +77,11 @@ class NewsView(ListView):
         return super().form_valid(form)
 
 
-class DeleteUserView(SuccessMessageMixin, DeleteView):
-    model = News
-    template_name= 'sba_website/delete_user_confirm.html'
-    success_message='Your news has been deleted successfully!'
-    success_url = reverse_lazy('home')
+# class DeleteUserView(SuccessMessageMixin, DeleteView):
+#     model = News
+#     template_name= 'sba_website/delete_user_confirm.html'
+#     success_message='Your news has been deleted successfully!'
+#     success_url = reverse_lazy('home')
 
 
 class CreateNewsView(CreateView):
@@ -72,7 +90,11 @@ class CreateNewsView(CreateView):
     template_name = 'sba_website/create_news.html'  # Template utilisé pour afficher le formulaire
     success_url = reverse_lazy('news_list')  # URL vers laquelle rediriger après la création réussie
 
+    def dispatch(self, request, *args, **kwargs):
 
+        if not request.user.role: 
+            return redirect('/profile/') #renvoie sur cet url si l'utilisateur ne remplit pas la condition is_staff
+        return super().dispatch(request, *args, **kwargs)
 
     def post(self, request):
         form = CreateNews(request.POST)
@@ -92,6 +114,13 @@ class NewsDeleteView(DeleteView):
     success_url = reverse_lazy('news_list')
 
 
+    def dispatch(self, request, *args, **kwargs):
+
+        if not request.user.role: 
+            return redirect('/profile/') #renvoie sur cet url si l'utilisateur ne remplit pas la condition is_staff
+        return super().dispatch(request, *args, **kwargs)
+
+
 
 class NewsUpdateView(UpdateView, LoginRequiredMixin):
     model = User  # Le modèle que l'on souhaite mettre à jour
@@ -99,16 +128,11 @@ class NewsUpdateView(UpdateView, LoginRequiredMixin):
     template_name = 'sba_website/news_update.html'  # Le template à utiliser pour le formulaire
     success_url = reverse_lazy('new_list')  # L'URL vers laquelle rediriger après la mise à jour réussie
 
+    
+    def dispatch(self, request, *args, **kwargs):
+
+        if not request.user.role: 
+            return redirect('/profile/') #renvoie sur cet url si l'utilisateur ne remplit pas la condition is_staff
+        return super().dispatch(request, *args, **kwargs)
 
 
-class CreateUserViews(CreateView):
-    model = User #spécifie le modèle
-    form_class = CustomCreationForm
-    template_name = 'sba_website/signup.html' #spécifie le template
-    success_url = reverse_lazy('login') #redirection après la création
-
-class AccountUpdateView(UpdateView, LoginRequiredMixin):
-    model = User  # Le modèle que l'on souhaite mettre à jour
-    form_class=AccountChangeForm
-    template_name = 'sba_website/account_update.html'  # Le template à utiliser pour le formulaire
-    success_url = reverse_lazy('display_profile')  # L'URL vers laquelle rediriger après la mise à jour réussie
