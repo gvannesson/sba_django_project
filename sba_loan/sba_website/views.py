@@ -19,24 +19,68 @@ from django.http import HttpResponse
 
 
 class HomeView(TemplateView):
+    """
+    Vue représentant la page d'accueil du site. Cette vue affiche les 5 dernières actualités publiées.
+
+    Attributs :
+        template_name (str) : Le nom du template à rendre, ici 'sba_website/home.html'.
+
+    Méthodes :
+        get_context_data(**kwargs) : Méthode qui permet d'ajouter des données supplémentaires au contexte du template.
+                                      Elle récupère les 5 dernières actualités triées par date de publication (les plus récentes en premier).
+    """
     template_name = 'sba_website/home.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Récupère les 5 dernières actualités et les ajoute au contexte.
+
+        Args :
+            **kwargs : Arguments supplémentaires passés à la méthode (non utilisés ici).
+
+        Retourne :
+            dict : Un dictionnaire avec les données à passer au template, y compris les actualités les plus récentes.
+        """
+        context = super().get_context_data(**kwargs)
+        context['news_list'] = News.objects.all().order_by('-publication_date')[:5]  # Afficher les 5 dernières news
+        return context
 
 # Create your views here.
 
 #region Display
 
 class DisplayProfileView(LoginRequiredMixin, TemplateView):
+    """
+    Vue permettant d'afficher le profil de l'utilisateur connecté.
+
+    Attributs :
+        template_name (str) : Le nom du template à rendre, ici 'sba_website/profile.html'.
+        login_url (str) : L'URL de la page de connexion à rediriger l'utilisateur si il n'est pas connecté, ici '/login/'.
+
+    Hérite de :
+        LoginRequiredMixin : Assure que l'utilisateur est connecté avant d'accéder à cette vue.
+        TemplateView : Vue générique de Django permettant de rendre un template avec un contexte.
+    """
     template_name='sba_website/profile.html'
     login_url= "/login/"
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['predictions'] = self.request.user.prediction_set.all().filter(user_id=self.request.user.id) #on rajoute une clé predictions pour savoir s'il y a déjà des prédictions pour ensuite faire apparaître
-    #     return context
 
 # region user
 
 class DeleteUserView(SuccessMessageMixin, DeleteView):
+    """
+    Vue permettant de supprimer un utilisateur du système après confirmation.
+
+    Attributs :
+        model (Model) : Le modèle associé à cette vue, ici le modèle `User`.
+        template_name (str) : Le nom du template à rendre pour confirmer la suppression, ici 'sba_website/delete_user_confirm.html'.
+        success_message (str) : Le message de succès affiché après la suppression du compte, ici 'Your account has been deleted successfully!'.
+        success_url (str) : L'URL vers laquelle l'utilisateur est redirigé après la suppression, ici la page d'accueil (définie par `reverse_lazy('home')`).
+
+    Hérite de :
+        SuccessMessageMixin : Permet d'afficher un message de succès après l'exécution de l'action.
+        DeleteView : Vue générique de Django permettant de supprimer un objet.
+    """
     model = User
     template_name= 'sba_website/delete_user_confirm.html'
     success_message='Your account has been deleted successfully!'
@@ -44,6 +88,19 @@ class DeleteUserView(SuccessMessageMixin, DeleteView):
 
 
 class ClientView(ListView):
+    """
+    Vue permettant d'afficher la liste des clients dans l'application.
+
+    Attributs :
+        model (Model) : Le modèle associé à cette vue, ici le modèle `User`.
+        template_name (str) : Le nom du template à rendre, ici 'sba_website/clients_list.html'.
+        context_object_name (str) : Le nom de la variable contextuelle qui contiendra la liste des clients dans le template, ici 'clients'.
+
+    Méthodes :
+        get_queryset() : Méthode qui retourne la liste des utilisateurs ayant le rôle de client (role = 0).
+        dispatch(request, *args, **kwargs) : Méthode qui vérifie si l'utilisateur connecté a un rôle spécifique. Si ce n'est pas le cas, l'utilisateur est redirigé vers son profil. Sinon, la requête est traitée normalement.
+    """
+
     model = User
     template_name = 'sba_website/clients_list.html'
     context_object_name = 'clients'

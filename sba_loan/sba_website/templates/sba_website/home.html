@@ -4,4 +4,35 @@
 
 <h1>Your favorite bank  of NEW JERSEY ECONOMIC DEVEL,</h1>
 
+<body>
+    <div class="container mt-5">
+        <!-- Carrousel des news -->
+        <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for news_item in news_list %}
+                <div class="carousel-item {% if forloop.first %} active {% endif %}">
+                    <img src="{{ news_item.news_url }}" class="d-block w-100" alt="{{ news_item.title }}">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>{{ news_item.title }}</h5>
+                        <p>{{ news_item.content|truncatewords:20 }}</p>
+                        <a href="{{ news_item.news_url }}" class="btn btn-primary">Lire plus</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+
 {% endblock %}
