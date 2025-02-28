@@ -22,7 +22,7 @@ class NewsChangeForm(forms.ModelForm):
 class CustomCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ["email", "password1", "password2", 'NAICS', 'state','company_name','urbanrural','phone_number'] #les champs utilisés pour la création d'un profil
+        fields = ["email", 'company_name', "password1", "password2", 'NAICS', 'franchisecode', 'state','no_emp', 'urbanrural','phone_number'] #les champs utilisés pour la création d'un profil
 
 class AccountChangeForm(forms.ModelForm):
     class Meta:
