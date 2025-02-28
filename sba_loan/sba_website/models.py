@@ -9,25 +9,17 @@ class User(AbstractUser):
     state = models.CharField(max_length=100, blank=True)
     NAICS = models.CharField(max_length=100, blank=True)
     URBAN_RURAL_CHOICES = [
-        ('y', 'Urban'),
-        ('n', 'Rural'),
+        ('1', 'Urban'),
+        ('0', 'Rural'),
     ]
     urbanrural = models.CharField(max_length=1, choices=URBAN_RURAL_CHOICES, null=True, default='n')
     franchisecode = models.CharField(max_length=50, null=True, default='0')
     role = models.IntegerField(null=True, default=0) # 0 = company , 1 = advisor
+    no_emp = models.IntegerField(verbose_name="Number of employees", null=True, default=0)
     username = models.CharField(max_length=100,blank=True)
     USERNAME_FIELD = "email"
     email = models.EmailField(('email address'), unique=True) # changes email to unique and blank to false
     REQUIRED_FIELDS = []
-
-    email = models.EmailField(unique=True)
-    username = models.CharField(max_length=150, blank=True, unique=False)
-    REQUIRED_FIELDS = []
-
-
-    franchisecode = models.CharField(max_length=50, null=True, default='0')
-
-    role = models.IntegerField(null=True, default=0) # 0 = company , 1 = advisor
 
     
 class LoanRequest(models.Model):
@@ -35,8 +27,8 @@ class LoanRequest(models.Model):
     bank_loan = models.IntegerField(null=True, default=0)
     request_date = models.DateField(auto_now_add=True)
     LOW_DOC_CHOICES = [
-        ('1', 'Yes'),
-        ('0', 'No'),
+        (True, 'Yes'),
+        (False, 'No'),
     ]
     lowdoc = models.CharField(max_length=1, choices=LOW_DOC_CHOICES, null=True, default='n')
     sba_loan = models.IntegerField(null=True, default=0)
@@ -44,6 +36,7 @@ class LoanRequest(models.Model):
     term = models.IntegerField(null=True, default=0)
     reason = models.CharField(max_length=500, null=True, default='')
     status = models.IntegerField(null=True, default=0)
+    prediction_result = models.CharField(max_length=500, null=True, default='Not predicted')
 
 
 class News(models.Model):

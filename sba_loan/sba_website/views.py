@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, ListView, View
 from django.urls import reverse_lazy
 from django.shortcuts import render
 from .models import User, LoanRequest
-from django.views.generic import TemplateView, ListView, CreateView, DeleteView, UpdateView, FormView
+from django.views.generic import TemplateView, ListView, CreateView, DeleteView, UpdateView, FormView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CustomCreationForm, AccountChangeForm, LoanRequestAdvisorForm, LoanRequestForm, SelectLoanRequest
 from django.urls import reverse_lazy
@@ -14,6 +14,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 import api_handler
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 
 
 
@@ -92,7 +93,7 @@ class FillLoanRequestView(UpdateView):
     model = LoanRequest #spécifie le modèle
     form_class = LoanRequestAdvisorForm
     template_name = 'sba_website/loan_filling.html' #spécifie le template
-    success_url = reverse_lazy('home') #redirection après la création
+    success_url = reverse_lazy('select_loan_request') #redirection après la création
 
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
@@ -121,20 +122,6 @@ class LoanListViews(ListView, FormView):
             result = result.filter(status=query_status)
         return result
 
-    def post(self, request, *args, **kwargs):
-        return JsonResponse({
-                "state": "FL",
-                "term": 120,
-                "no_emp": 150,
-                "urban_rural": 0,
-                "cat_activities": 42,
-                "bank_loan_float": 120000,
-                "sba_loan_float": 100000,
-                "franchise_code": 0,
-                "lowdoc": True,
-                "bank": "NEW JERSEY ECONOMIC DEVEL"
-                })
-        return super().post(request, *args, **kwargs)
 
 class APITestView(TemplateView):
     template_name = "sba_website/api_test.html"
@@ -157,7 +144,35 @@ class APITestView(TemplateView):
         context["prediction"] =  api_handler.make_prediction(data)
         return context
 
-    
+
+class PredictLoanView(DetailView):
+    model = LoanRequest
+    template_name = 'predict_loan.html'  # Nom de votre template
+    context_object_name = 'loan'  # Nom du contexte utilisé dans le template
+
+    def post(self, request, *args, **kwargs):
+        loan = self.get_object()  # Récupère le prêt à partir de l'ID dans l'URL
+        user = loan.user_id
+        print(user)
+        data = {
+                "state": user.state,
+                "term": loan.term,
+                "no_emp": user.no_emp,
+                "urban_rural": user.urbanrural,
+                "cat_activities": user.NAICS[:2],
+                "bank_loan_float": loan.bank_loan,
+                "sba_loan_float": loan.sba_loan,
+                "franchise_code": user.franchisecode,
+                "lowdoc": bool(loan.lowdoc),
+                "bank": "NEW JERSEY ECONOMIC DEVEL"
+                }
+        print(data)
+        loan.prediction_result = api_handler.make_prediction(data=data)
+        loan.status = 3
+        loan.save()
+        return redirect('/loan_list/')
+
+
 # class PredictView(TemplateView):
 #     template_name = 'sba_website/prediction.html'
 #     def get_context_data(self, **kwargs):

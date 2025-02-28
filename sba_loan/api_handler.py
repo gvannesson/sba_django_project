@@ -25,7 +25,7 @@ def login():
         print("Réponse de l'API :")
         print(response.json())
         token = response.json()["access_token"]
-        set_key("./.env", "TOKEN", response.json()["access_token"])
+        set_key("../.env", "TOKEN", response.json()["access_token"])
         return token
     else:
         print(f"Erreur : {response.status_code}")
@@ -49,7 +49,7 @@ def make_prediction(data:dict):
             json=data,
             headers=headers
         )
-        
+        print(response.json)
         response.raise_for_status() #Lève une exception si status != 200
         
     except requests.exceptions.HTTPError as http_err:
@@ -60,7 +60,7 @@ def make_prediction(data:dict):
                 "Authorization": f"Bearer {token}"
             }
             response = requests.post(
-                f"{os.getenv("BASE_URL")}/api/v1/predict",
+                f"{os.getenv("BASE_URL")}/api/loans/predict",
                 json=data,
                 headers=headers
             )
