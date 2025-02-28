@@ -52,9 +52,10 @@ class ClientView(ListView):
     
     def dispatch(self, request, *args, **kwargs):
 
-        if not request.user.role: 
+        if request.user.role == 0: 
             return redirect('/profile/') #renvoie sur cet url si l'utilisateur ne remplit pas la condition is_staff
         return super().dispatch(request, *args, **kwargs)
+
     
 class CreateUserViews(CreateView):
     model = User #spécifie le modèle
@@ -68,6 +69,7 @@ class AccountUpdateView(UpdateView, LoginRequiredMixin):
     template_name = 'sba_website/account_update.html'  # Le template à utiliser pour le formulaire
     success_url = reverse_lazy('home')  # L'URL vers laquelle rediriger après la mise à jour réussie
 
+# region Loan
 
 class CreateLoanRequestView(CreateView):
     model = LoanRequest #spécifie le modèle
@@ -101,6 +103,13 @@ class FillLoanRequestView(UpdateView):
         loan_request.status = 2
         loan_request.save()
         return response
+
+    def dispatch(self, request, *args, **kwargs):
+
+        if request.user.role == 0: 
+            return redirect('/profile/') #renvoie sur cet url si l'utilisateur ne remplit pas la condition is_staff
+        return super().dispatch(request, *args, **kwargs)
+
 
 
 class LoanListViews(ListView, FormView):
@@ -209,7 +218,7 @@ class CreateNewsView(CreateView):
 
     def dispatch(self, request, *args, **kwargs):
 
-        if not request.user.role: 
+        if request.user.role == 0: 
             return redirect('/profile/') #renvoie sur cet url si l'utilisateur ne remplit pas la condition is_staff
         return super().dispatch(request, *args, **kwargs)
 
@@ -233,7 +242,7 @@ class NewsDeleteView(DeleteView):
 
     def dispatch(self, request, *args, **kwargs):
 
-        if not request.user.role: 
+        if request.user.role == 0: 
             return redirect('/profile/') #renvoie sur cet url si l'utilisateur ne remplit pas la condition is_staff
         return super().dispatch(request, *args, **kwargs)
 
@@ -245,10 +254,10 @@ class NewsUpdateView(UpdateView, LoginRequiredMixin):
     template_name = 'sba_website/news_update.html'  # Le template à utiliser pour le formulaire
     success_url = reverse_lazy('new_list')  # L'URL vers laquelle rediriger après la mise à jour réussie
 
-    
+
     def dispatch(self, request, *args, **kwargs):
 
-        if not request.user.role: 
+        if request.user.role == 0: 
             return redirect('/profile/') #renvoie sur cet url si l'utilisateur ne remplit pas la condition is_staff
         return super().dispatch(request, *args, **kwargs)
 
