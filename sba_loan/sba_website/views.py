@@ -42,7 +42,7 @@ class HomeView(TemplateView):
             dict : Un dictionnaire avec les données à passer au template, y compris les actualités les plus récentes.
         """
         context = super().get_context_data(**kwargs)
-        context['news_list'] = News.objects.all().order_by('-publication_date')[:5]  # Afficher les 5 dernières news
+        context['news'] = News.objects.all().order_by('-publication_date')[:5]  # Afficher les 5 dernières news
         return context
 
 # Create your views here.
@@ -115,12 +115,54 @@ class ClientView(ListView):
 
     
 class CreateUserViews(CreateView):
+    """
+    Vue de création d'un utilisateur.
+
+    Cette vue permet de créer un nouvel utilisateur à partir du formulaire `CustomCreationForm`.
+    Lorsqu'un utilisateur est créé avec succès, il est redirigé vers la page de connexion.
+
+    Attributs:
+        model (django.db.models.Model): Le modèle `User` qui représente l'utilisateur.
+        form_class (django.forms.Form): Le formulaire `CustomCreationForm` utilisé pour collecter les informations de l'utilisateur.
+        template_name (str): Le chemin relatif vers le template HTML utilisé pour afficher la page de création.
+        success_url (str): L'URL de redirection après la création réussie de l'utilisateur. Dans ce cas, l'utilisateur est redirigé vers la page de connexion.
+
+    Méthodes:
+        get_context_data(**kwargs): Cette méthode est héritée de `CreateView` et permet de personnaliser le contexte du template.
+        form_valid(form): Cette méthode est héritée de `CreateView` et gère la logique qui se produit lorsque le formulaire est valide.
+
+    Exemple:
+        Pour utiliser cette vue, assurez-vous d'avoir le modèle `User` et le formulaire `CustomCreationForm` correctement configurés. Le template `sba_website/signup.html` sera rendu lors de la demande de création.
+    """
     model = User #spécifie le modèle
     form_class = CustomCreationForm
     template_name = 'sba_website/signup.html' #spécifie le template
     success_url = reverse_lazy('login') #redirection après la création
 
 class AccountUpdateView(UpdateView, LoginRequiredMixin):
+    """
+    Vue de mise à jour du compte utilisateur.
+
+    Cette vue permet à un utilisateur connecté de mettre à jour ses informations personnelles.
+    Elle utilise le formulaire `AccountChangeForm` et, après une mise à jour réussie, redirige l'utilisateur vers la page d'accueil.
+
+    Attributs:
+        model (django.db.models.Model): Le modèle `User` représentant l'utilisateur dont les informations sont mises à jour.
+        form_class (django.forms.Form): Le formulaire `AccountChangeForm` utilisé pour modifier les informations de l'utilisateur.
+        template_name (str): Le chemin relatif vers le template HTML utilisé pour afficher le formulaire de mise à jour du compte.
+        success_url (str): L'URL de redirection après la mise à jour réussie de l'utilisateur. Dans ce cas, l'utilisateur est redirigé vers la page d'accueil.
+
+    Méthodes:
+        get_context_data(**kwargs): Cette méthode est héritée de `UpdateView` et permet de personnaliser le contexte du template.
+        form_valid(form): Cette méthode est héritée de `UpdateView` et gère la logique qui se produit lorsque le formulaire est valide.
+    
+    Notes:
+        - Seuls les utilisateurs authentifiés peuvent accéder à cette vue, grâce au mixin `LoginRequiredMixin`.
+        - Il est nécessaire d'avoir une instance de `User` à mettre à jour dans la vue.
+
+    Exemple:
+        Après qu'un utilisateur connecté ait modifié ses informations, la vue redirige automatiquement vers la page d'accueil.
+    """
     model = User  # Le modèle que l'on souhaite mettre à jour
     form_class=AccountChangeForm
     template_name = 'sba_website/account_update.html'  # Le template à utiliser pour le formulaire
@@ -129,17 +171,34 @@ class AccountUpdateView(UpdateView, LoginRequiredMixin):
 # region Loan
 
 class CreateLoanRequestView(CreateView):
+    """
+    Vue de création de demande de prêt.
+
+    Cette vue permet à un utilisateur de soumettre une demande de prêt. Elle utilise le formulaire `LoanRequestForm` pour collecter les informations nécessaires à la création d'une nouvelle demande de prêt. Après avoir soumis une demande, l'utilisateur est redirigé vers la page d'accueil.
+
+    Attributs:
+        model (django.db.models.Model): Le modèle `LoanRequest` représentant une demande de prêt.
+        form_class (django.forms.Form): Le formulaire `LoanRequestForm` utilisé pour collecter les informations de la demande.
+        template_name (str): Le chemin relatif vers le template HTML utilisé pour afficher le formulaire de demande de prêt.
+        success_url (str): L'URL de redirection après la création réussie de la demande de prêt. L'utilisateur est redirigé vers la page d'accueil après la soumission.
+
+    Méthodes:
+        post(request, *args, **kwargs): Cette méthode est appelée lorsqu'une demande de prêt est soumise via une requête POST. Elle crée un nouvel objet `LoanRequest` et l'associe à l'utilisateur actuellement connecté. Les informations de la demande (montant du prêt et raison) sont récupérées à partir de la requête POST et sauvegardées dans la base de données.
+
+    Notes:
+        - L'utilisateur doit être authentifié pour pouvoir soumettre une demande de prêt.
+        - Les informations soumises dans le formulaire sont utilisées pour créer une nouvelle instance de `LoanRequest`, qui est ensuite enregistrée en base de données.
+        - Cette vue redirige l'utilisateur vers la page d'accueil après la création de la demande.
+
+    Exemple:
+        Lorsqu'un utilisateur soumet une demande de prêt, la vue crée une nouvelle demande de prêt associée à l'utilisateur, et l'utilisateur est redirigé vers la page d'accueil.
+    """
     model = LoanRequest #spécifie le modèle
     form_class = LoanRequestForm
     template_name = 'sba_website/loan_request.html' #spécifie le template
     success_url = reverse_lazy('home') #redirection après la création
 
     def post(self, request, *args, **kwargs):
-
-        # user = User.objects.get(id = request.user.id)
-
-        # print(user.__dict__)
-        # print()
         newrequest = LoanRequest()
         newrequest.user_id = request.user
         newrequest.bank_loan = request.POST.get("bank_loan")
@@ -149,6 +208,29 @@ class CreateLoanRequestView(CreateView):
     
 
 class FillLoanRequestView(UpdateView):
+    """
+    Vue de remplissage d'une demande de prêt.
+
+    Cette vue permet à un utilisateur de remplir les détails d'une demande de prêt. Elle utilise le formulaire `LoanRequestAdvisorForm` pour collecter les informations supplémentaires liées à la demande de prêt. Après la soumission du formulaire, le statut de la demande de prêt est mis à jour, et l'utilisateur est redirigé vers une page spécifique.
+
+    Attributs:
+        model (django.db.models.Model): Le modèle `LoanRequest` représentant une demande de prêt à mettre à jour.
+        form_class (django.forms.Form): Le formulaire `LoanRequestAdvisorForm` utilisé pour collecter des informations supplémentaires pour la demande de prêt.
+        template_name (str): Le chemin relatif vers le template HTML utilisé pour afficher le formulaire de remplissage de la demande de prêt.
+        success_url (str): L'URL de redirection après la soumission réussie du formulaire. L'utilisateur est redirigé vers la vue `select_loan_request`.
+
+    Méthodes:
+        post(request, *args, **kwargs): Cette méthode est appelée lorsqu'une demande de prêt est soumise via une requête POST. Après la soumission, le statut de la demande est mis à jour (le statut passe à `2`), et l'objet `LoanRequest` est sauvegardé en base de données.
+        dispatch(request, *args, **kwargs): Cette méthode est utilisée pour vérifier si l'utilisateur a un rôle valide pour accéder à la vue. Si l'utilisateur n'a pas le rôle approprié (si son rôle est `0`), il est redirigé vers la page de son profil.
+
+    Notes:
+        - Cette vue est utilisée par les utilisateurs ayant un rôle spécifique pour remplir ou compléter une demande de prêt.
+        - Le statut de la demande de prêt est mis à jour après la soumission du formulaire.
+        - Si un utilisateur n'a pas les droits appropriés (rôle `0`), il sera redirigé vers sa page de profil.
+
+    Exemple:
+        Après avoir rempli et soumis le formulaire, l'utilisateur est redirigé vers la vue `select_loan_request`, et la demande de prêt aura son statut mis à jour à `2`.
+    """
     model = LoanRequest #spécifie le modèle
     form_class = LoanRequestAdvisorForm
     template_name = 'sba_website/loan_filling.html' #spécifie le template
@@ -170,6 +252,30 @@ class FillLoanRequestView(UpdateView):
 
 
 class LoanListViews(ListView, FormView):
+    """
+    Vue de liste des demandes de prêt avec filtres.
+
+    Cette vue affiche une liste de toutes les demandes de prêt, avec la possibilité de filtrer les résultats selon plusieurs critères, tels que le nom de l'entreprise, le montant du prêt, et le statut de la demande. Elle utilise le formulaire `SelectLoanRequest` pour la recherche et affiche les résultats dans le template spécifié.
+
+    Attributs:
+        model (django.db.models.Model): Le modèle `LoanRequest` représentant une demande de prêt.
+        form_class (django.forms.Form): Le formulaire `SelectLoanRequest` utilisé pour effectuer des recherches et filtrer les demandes de prêt.
+        template_name (str): Le chemin relatif vers le template HTML utilisé pour afficher la liste des demandes de prêt.
+        context_object_name (str): Le nom de la variable dans le contexte du template qui contiendra la liste des demandes de prêt filtrées. Par défaut, il est défini à `loans`.
+
+    Méthodes:
+        get_queryset(): Cette méthode personnalise la requête pour récupérer les demandes de prêt. Elle applique les filtres en fonction des paramètres de recherche présents dans la requête GET (`search_by_company_name`, `search_by_amount`, `search_by_status`). Si des critères de recherche sont fournis, la méthode filtre les demandes de prêt en conséquence.
+
+    Notes:
+        - Les filtres suivants sont disponibles pour la recherche:
+            - `search_by_company_name`: Filtrer les demandes de prêt par le nom de l'entreprise associée à l'utilisateur.
+            - `search_by_amount`: Filtrer les demandes de prêt par le montant du prêt.
+            - `search_by_status`: Filtrer les demandes de prêt par leur statut.
+        - Si aucun filtre n'est spécifié, toutes les demandes de prêt seront affichées.
+
+    Exemple:
+        Lorsqu'un utilisateur souhaite rechercher des demandes de prêt en fonction du nom de l'entreprise, du montant du prêt ou du statut de la demande, il peut utiliser les champs de filtrage. La vue renverra une liste des demandes correspondant aux critères spécifiés.
+    """
     model = LoanRequest #spécifie le modèle
     form_class = SelectLoanRequest
     template_name = 'sba_website/loan_list.html' #spécifie le template
@@ -189,29 +295,30 @@ class LoanListViews(ListView, FormView):
         return result
 
 
-class APITestView(TemplateView):
-    template_name = "sba_website/api_test.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        data = {
-                    "state": "NJ",
-                    "term": 45,
-                    "no_emp": 45,
-                    "urban_rural": 0,
-                    "cat_activities": 0,
-                    "bank_loan_float": 600000.0,
-                    "sba_loan_float": 499998.0,
-                    "franchise_code": 0,
-                    "lowdoc": False,
-                    "bank": "NEW JERSEY ECONOMIC DEVEL"
-                    }
-       
-        context["prediction"] =  api_handler.make_prediction(data)
-        return context
-
 
 class PredictLoanView(DetailView):
+    """
+    Vue de prédiction du prêt.
+
+    Cette vue permet de prédire le résultat d'une demande de prêt en utilisant des données spécifiques à l'utilisateur et à la demande. Lorsqu'un utilisateur soumet la demande de prédiction via un formulaire POST, la vue récupère les données nécessaires, effectue la prédiction, met à jour le statut de la demande et redirige l'utilisateur vers la liste des demandes de prêt.
+
+    Attributs:
+        model (django.db.models.Model): Le modèle `LoanRequest` représentant une demande de prêt à prédire.
+        template_name (str): Le chemin relatif vers le template HTML utilisé pour afficher les détails de la demande de prêt.
+        context_object_name (str): Le nom de la variable dans le contexte du template contenant les détails de la demande de prêt. Par défaut, il est défini à `loan`.
+
+    Méthodes:
+        post(request, *args, **kwargs): Cette méthode est appelée lorsqu'une requête POST est effectuée. Elle récupère la demande de prêt et l'utilisateur associé, prépare les données nécessaires pour la prédiction, appelle un API de prédiction (via `api_handler.make_prediction`), met à jour le résultat de la prédiction dans la demande de prêt, et change son statut. Ensuite, elle redirige l'utilisateur vers la liste des demandes de prêt.
+
+    Notes:
+        - Les données utilisées pour la prédiction incluent des informations de l'utilisateur (comme l'état, le nombre d'employés, le code de franchise, etc.) et des informations de la demande de prêt (comme le montant du prêt, la durée, et le type de prêt).
+        - Le statut de la demande de prêt est mis à jour à `3` une fois la prédiction effectuée.
+        - La redirection après le traitement se fait vers la vue des demandes de prêt (`/loan_list/`).
+
+    Exemple:
+        Lorsqu'un utilisateur soumet une demande de prédiction pour un prêt, la vue appelle un modèle de prédiction externe (API), met à jour les informations de la demande et change son statut, avant de rediriger l'utilisateur vers la page de la liste des prêts.
+    """
+
     model = LoanRequest
     template_name = 'predict_loan.html'  # Nom de votre template
     context_object_name = 'loan'  # Nom du contexte utilisé dans le template
@@ -239,17 +346,30 @@ class PredictLoanView(DetailView):
         return redirect('/loan_list/')
 
 
-# class PredictView(TemplateView):
-#     template_name = 'sba_website/prediction.html'
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['prediction'] = LoanRequest.objects.all().filter(status=2) #on rajoute une clé predictions pour savoir s'il y a déjà des prédictions pour ensuite faire apparaître
-#         return context
-    # success_url = reverse_lazy('display_profile')  # L'URL vers laquelle rediriger après la mise à jour réussie
 
 #region News
     
 class NewsView(ListView):
+
+    """
+    Vue de liste des articles de news.
+
+    Cette vue affiche une liste d'articles de news. Elle utilise le modèle `News` pour récupérer et afficher les articles dans un template. Le contexte est nommé `news` dans le template, ce qui permet d'accéder facilement à la liste des articles.
+
+    Attributs:
+        model (django.db.models.Model): Le modèle `News` représentant les articles de news à afficher.
+        template_name (str): Le chemin relatif vers le template HTML utilisé pour afficher la liste des articles de news.
+        context_object_name (str): Le nom de la variable dans le contexte du template qui contiendra la liste des articles de news. Par défaut, il est défini à `news`.
+
+    Méthodes:
+        form_valid(form): Cette méthode est appelée lorsque le formulaire est valide. Elle associe l'utilisateur connecté à un article de news avant de sauvegarder l'instance de l'article. L'utilisateur est récupéré via `self.request.user` et est affecté à l'instance de `News` avant de procéder à la validation du formulaire.
+
+    Notes:
+        - Cette vue est principalement utilisée pour afficher une liste d'articles de news. Si la logique pour la création ou la mise à jour des articles est incluse dans cette vue, la méthode `form_valid` permet d'associer automatiquement l'utilisateur actuel à chaque nouvel article.
+
+    Exemple:
+        Lorsqu'un utilisateur soumet un article de news, l'utilisateur connecté est automatiquement associé à cet article avant qu'il ne soit enregistré dans la base de données.
+    """
     model = News
     template_name = 'sba_website/news_list.html'
     context_object_name = 'news'
@@ -260,14 +380,33 @@ class NewsView(ListView):
         return super().form_valid(form)
 
 
-# class DeleteUserView(SuccessMessageMixin, DeleteView):
-#     model = News
-#     template_name= 'sba_website/delete_user_confirm.html'
-#     success_message='Your news has been deleted successfully!'
-#     success_url = reverse_lazy('home')
 
 
 class CreateNewsView(CreateView):
+    """
+    Vue de création d'un article de news.
+
+    Cette vue permet à un utilisateur d'ajouter un nouvel article de news en remplissant un formulaire. Si la création est réussie, l'utilisateur est redirigé vers la liste des articles de news. La vue vérifie également que l'utilisateur a un rôle approprié avant d'afficher le formulaire.
+
+    Attributs:
+        model (django.db.models.Model): Le modèle `News` qui représente un article de news à créer.
+        form_class (django.forms.Form): Le formulaire `CreateNews` utilisé pour collecter les informations nécessaires à la création d'un article de news.
+        template_name (str): Le chemin relatif vers le template HTML utilisé pour afficher le formulaire de création d'un article de news.
+        success_url (str): L'URL de redirection après la création réussie de l'article de news. L'utilisateur est redirigé vers la liste des articles de news (`news_list`).
+
+    Méthodes:
+        dispatch(request, *args, **kwargs): Cette méthode vérifie le rôle de l'utilisateur. Si l'utilisateur n'a pas un rôle approprié (si son rôle est `0`), il est redirigé vers la page de profil. Sinon, elle appelle la méthode `dispatch` de la classe parente pour continuer l'exécution normale.
+        post(request): Cette méthode est appelée lorsqu'une requête POST est effectuée pour soumettre le formulaire. Elle crée un nouvel article de news et l'associe à l'utilisateur connecté avant de sauvegarder l'article dans la base de données. Ensuite, elle redirige l'utilisateur vers la liste des articles de news.
+
+    Notes:
+        - Cette vue est utilisée pour la création d'un article de news par un utilisateur ayant les droits appropriés.
+        - Si l'utilisateur n'a pas les droits nécessaires (rôle `0`), il sera redirigé vers la page de son profil.
+        - La méthode `post` permet de personnaliser le processus de sauvegarde en associant l'utilisateur connecté au nouvel article avant de le sauvegarder.
+
+    Exemple:
+        Lorsqu'un utilisateur soumet un nouvel article de news via le formulaire, l'article est enregistré avec l'utilisateur connecté comme auteur, et l'utilisateur est redirigé vers la liste des articles de news après la création.
+    """
+
     model = News  # Associe le modèle News à cette vue
     form_class = CreateNews  # Le formulaire que tu utilises
     template_name = 'sba_website/create_news.html'  # Template utilisé pour afficher le formulaire
@@ -291,6 +430,28 @@ class CreateNewsView(CreateView):
 
 
 class NewsDeleteView(DeleteView):
+    """
+    Vue de suppression d'un article de news.
+
+    Cette vue permet à un utilisateur de supprimer un article de news. Avant de procéder à la suppression, la vue vérifie que l'utilisateur a le rôle approprié pour effectuer cette action. Si l'utilisateur n'a pas les droits nécessaires, il est redirigé vers sa page de profil.
+
+    Attributs:
+        model (django.db.models.Model): Le modèle `News` représentant l'article de news à supprimer.
+        template_name (str): Le chemin relatif vers le template HTML utilisé pour confirmer la suppression de l'article.
+        context_object_name (str): Le nom de la variable dans le contexte du template qui contient l'article de news à supprimer. Par défaut, il est défini à `new`.
+        success_url (str): L'URL de redirection après la suppression réussie de l'article de news. L'utilisateur est redirigé vers la liste des articles de news (`news_list`).
+
+    Méthodes:
+        dispatch(request, *args, **kwargs): Cette méthode vérifie le rôle de l'utilisateur. Si l'utilisateur n'a pas un rôle approprié (si son rôle est `0`), il est redirigé vers la page de profil. Sinon, elle appelle la méthode `dispatch` de la classe parente pour continuer l'exécution normale.
+
+    Notes:
+        - Cette vue est utilisée pour la suppression d'un article de news. Avant de permettre la suppression, la vue vérifie que l'utilisateur a un rôle valide pour effectuer l'action.
+        - Une fois l'article supprimé, l'utilisateur est redirigé vers la liste des articles de news.
+
+    Exemple:
+        Lorsqu'un utilisateur ayant un rôle approprié supprime un article de news, la vue supprime l'article et redirige l'utilisateur vers la page de la liste des articles de news.
+    """
+
     model = News
     template_name = 'sba_website/delete_news.html'
     context_object_name = 'new'
@@ -306,6 +467,29 @@ class NewsDeleteView(DeleteView):
 
 
 class NewsUpdateView(UpdateView, LoginRequiredMixin):
+    """
+    Vue de mise à jour d'un article de news.
+
+    Cette vue permet à un utilisateur de modifier un article de news existant. Elle vérifie également que l'utilisateur a les permissions appropriées avant de permettre la mise à jour. Si l'utilisateur n'a pas les droits nécessaires, il est redirigé vers sa page de profil.
+
+    Attributs:
+        model (django.db.models.Model): Le modèle `User` utilisé dans cette vue, bien que ce soit probablement une erreur, car il devrait probablement être `News` pour gérer les articles de news.
+        form_class (django.forms.Form): Le formulaire `NewsChangeForm` utilisé pour la modification des articles de news.
+        template_name (str): Le chemin relatif vers le template HTML utilisé pour afficher le formulaire de mise à jour.
+        success_url (str): L'URL de redirection après la mise à jour réussie de l'article de news. L'utilisateur est redirigé vers la liste des articles de news (`news_list`).
+
+    Méthodes:
+        dispatch(request, *args, **kwargs): Cette méthode vérifie le rôle de l'utilisateur. Si l'utilisateur n'a pas un rôle approprié (si son rôle est `0`), il est redirigé vers la page de profil. Sinon, elle appelle la méthode `dispatch` de la classe parente pour continuer l'exécution normale.
+
+    Notes:
+        - Cette vue permet à un utilisateur de mettre à jour un article de news existant. Le formulaire permet de modifier les champs définis dans le modèle `News`.
+        - Si l'utilisateur n'a pas les droits nécessaires (rôle `0`), il sera redirigé vers sa page de profil.
+        - L'attribut `model` devrait probablement être `News`, car c'est un article de news qui est mis à jour, et non un utilisateur. Cela semble être une erreur dans la définition de la classe.
+
+    Exemple:
+        Lorsqu'un utilisateur ayant un rôle approprié modifie un article de news, la vue permet de mettre à jour les informations de l'article et redirige ensuite l'utilisateur vers la liste des articles de news après la mise à jour.
+    """
+
     model = User  # Le modèle que l'on souhaite mettre à jour
     form_class=NewsChangeForm
     template_name = 'sba_website/news_update.html'  # Le template à utiliser pour le formulaire
