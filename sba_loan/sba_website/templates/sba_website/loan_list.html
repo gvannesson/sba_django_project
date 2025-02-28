@@ -13,7 +13,11 @@
             <li>
                 <a class="btn mt-20" href="/loan_filling/{{loan.id}}">{{loan.reason}}</a>
                 {% if loan.status == 2 %}
-                    <a href="http://127.0.0.1:8086/api/loans/predict">Predict</a>
+                <form method="post" action="{% url 'predict_loan' loan.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="loan_id" value="{{loan.id}}">
+                    <button type='submit'>Predict</button>
+                </form>
                 {% endif %}
                 <p>{{loan.bank_loan}}</p>
             </li>
