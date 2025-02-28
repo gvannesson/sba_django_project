@@ -42,7 +42,7 @@ class HomeView(TemplateView):
             dict : Un dictionnaire avec les données à passer au template, y compris les actualités les plus récentes.
         """
         context = super().get_context_data(**kwargs)
-        context['news_list'] = News.objects.all().order_by('-publication_date')[:5]  # Afficher les 5 dernières news
+        context['news'] = News.objects.all().order_by('-publication_date')[:5]  # Afficher les 5 dernières news
         return context
 
 # Create your views here.
