@@ -4,9 +4,10 @@
             <td >{{ new.id }}</td>
             <td >{{ new.items }}</td>
             <td >{{ new.date_news }}</td>
-            <td >{{ new.news_url }}</td>
+            <td >{{ new.content }}</td>
+            <td ><a href={{ new.news_url }}>{{ new.news_url }}</a></td>
             <td>{{new.user_id_id}}</td>
-            {% if user.role == 1 %}
+            {% if user.role == 1 or user.is_superuser %}
             <td>
                 <a href="{% url 'delete_news' new.id %}" class="btn btn-danger">Supprimer</a>
             </td>

@@ -2,3 +2,6 @@ Django==5.1.5
 python-dotenv==1.0.1
 pandas==2.2.3
 whitenoise==6.8.2
+requests=2.32.3
+daphne==4.1.2
+channels==4.2.0

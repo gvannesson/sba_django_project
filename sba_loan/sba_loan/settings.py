@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'sba_website',
     'sba_loan',
     'chat',
+    'tailwind',
+    'theme',
+    'django_browser_reload',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_browser_reload.middleware.BrowserReloadMiddleware'
 ]
 
 ROOT_URLCONF = 'sba_loan.urls'
@@ -123,6 +127,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = BASE_DIR / "staticfiles"  # Where collected static files will be stored
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Additional static files directory (optional)
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -139,4 +149,11 @@ CHANNEL_LAYERS = {
             "hosts": [("127.0.0.1", 6379)],
         },
     },
+}
+
+# TAILWIND
+
+TAILWIND_APP_NAME = 'theme'
+INTERNAL_IPS = {
+    "127.0.0.1",
 }
