@@ -127,7 +127,7 @@ class LoanRequest(models.Model):
     ]
     lowdoc = models.CharField(max_length=1, choices=LOW_DOC_CHOICES, null=True, default='n')
     sba_loan = models.IntegerField(null=True, default=0)
-    revlinecr = models.CharField(max_length=50, null=True, default='0')
+    revlinecr = models.BooleanField(max_length=50, null=True, default='0')
     term = models.IntegerField(null=True, default=0)
     reason = models.CharField(max_length=500, null=True, default='')
     status = models.IntegerField(null=True, default=0)

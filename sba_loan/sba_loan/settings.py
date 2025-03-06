@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -85,11 +88,18 @@ WSGI_APPLICATION = 'sba_loan.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'mssql',
+        'NAME':os.getenv('NAME'),
+        'USER':os.getenv('USER'),
+        'PASSWORD':os.getenv('PASSWORD'),
+        'HOST':os.getenv('HOST'),
+        'PORT': '',  # Laisser vide, Azure SQL utilise le port par défaut (1433)
+        'OPTIONS': {
+            'driver': 'ODBC Driver 18 for SQL Server',  # Spécifiez le driver installé
+            'extra_params': 'TrustServerCertificate=yes;',  # Pour ignorer les erreurs SSL si besoin
+        },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
