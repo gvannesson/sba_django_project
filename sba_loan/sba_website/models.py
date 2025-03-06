@@ -90,7 +90,7 @@ class User(AbstractUser):
         ('1', 'Urban'),
         ('0', 'Rural'),
     ]
-    urbanrural = models.CharField(max_length=1, choices=URBAN_RURAL_CHOICES, null=True, default='n')
+    urbanrural = models.CharField(max_length=1, choices=URBAN_RURAL_CHOICES, null=True)
     franchisecode = models.PositiveIntegerField(null=True, default='0')
     role = models.IntegerField(null=True, default=0) # 0 = company , 1 = advisor
     no_emp = models.PositiveIntegerField(verbose_name="Number of employees", null=True, default=0)
@@ -125,11 +125,11 @@ class LoanRequest(models.Model):
         (True, 'Yes'),
         (False, 'No'),
     ]
-    lowdoc = models.CharField(max_length=1, choices=LOW_DOC_CHOICES, null=True, default='n')
+    lowdoc = models.CharField(max_length=10, choices=LOW_DOC_CHOICES, null=True)
     sba_loan = models.IntegerField(null=True, default=0)
-    revlinecr = models.CharField(max_length=50, null=True, default='0')
+    revlinecr = models.CharField(max_length=50,null=True, default='')
     term = models.IntegerField(null=True, default=0)
-    reason = models.CharField(max_length=500, null=True, default='')
+    reason = models.CharField(max_length=50, null=True, default='')
     status = models.IntegerField(null=True, default=0)
     prediction_result = models.CharField(max_length=500, null=True, default='Not predicted')
 

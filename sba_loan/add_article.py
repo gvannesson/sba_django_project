@@ -30,9 +30,10 @@ hashed_password = hasher.encode('admin', hasher.salt())
 
 
 user = User(
-    email='admin@admin.fr',
+    email='admin2@admin.fr',
     username='admin',
     password=hashed_password,  # Utiliser le mot de passe haché
-    is_superuser = 1
+    is_superuser = 1,
+    role = 1
 )
 user.save()
