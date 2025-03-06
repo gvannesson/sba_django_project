@@ -26,7 +26,7 @@ new_entry.save()
 
 # Créer un admin
 hasher = PBKDF2PasswordHasher()
-hashed_password = hasher.encode('azerty', hasher.salt())
+hashed_password = hasher.encode('admin', hasher.salt())
 
 
 user = User(

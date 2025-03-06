@@ -1,0 +1,108 @@
+Voici un petit tutoriel étape par étape pour connecter une base de données **Azure SQL Server** à un projet **Django**.
+
+### Prérequis :
+- Un compte **Microsoft Azure** avec accès à Azure SQL Database.
+- Python installé sur votre machine.
+- Django installé.
+- Le driver **`pyodbc`** pour la connexion à Azure SQL Server.
+
+### Étape 1 : Créer une base de données sur Azure SQL Server
+
+1. Connectez-vous à [Microsoft Azure](https://portal.azure.com/).
+2. Dans le portail, recherchez "SQL databases" et cliquez dessus.
+3. Cliquez sur "Add" pour créer une nouvelle base de données.
+4. Remplissez les champs comme suit :
+   - **Subscription** : Choisissez votre abonnement.
+   - **Resource Group** : Créez-en un ou utilisez un existant.
+   - **Database name** : Donnez un nom à votre base de données.
+   - **Server** : Créez un nouveau serveur (ou choisissez un serveur existant).
+     - **Server name** : Choisissez un nom unique pour le serveur.
+     - **Admin login** : Entrez le nom d'utilisateur de l'administrateur.
+     - **Password** : Définissez un mot de passe sécurisé.
+   - Choisissez le **pricing tier** (vous pouvez commencer avec un prix de base ou gratuit pour le test).
+5. Une fois la base de données créée, accédez à votre serveur et assurez-vous qu’il permet les connexions externes (modifier les règles de pare-feu si nécessaire).
+
+### Étape 2 : Obtenez les informations de connexion
+
+1. Accédez à votre serveur SQL.
+2. Notez les informations suivantes :
+   - **Nom du serveur** : Par exemple `monserveur.database.windows.net`
+   - **Nom de la base de données** : Ce que vous avez choisi lors de la création.
+   - **Nom d'utilisateur** : Celui que vous avez défini comme administrateur.
+   - **Mot de passe** : Le mot de passe de l’administrateur.
+
+### Étape 3 : Installer les dépendances nécessaires
+
+Dans votre environnement virtuel, installez les bibliothèques suivantes :
+
+```bash
+pip install django
+pip install pyodbc
+```
+
+### Étape 4 : Configurer Django pour utiliser Azure SQL Database
+
+1. Ouvrez le fichier `settings.py` de votre projet Django.
+2. Trouvez la section `DATABASES`, puis modifiez-la pour utiliser la base de données Azure SQL. Remplacez cette section par celle-ci :
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'nom_de_votre_base_de_donnees',
+        'USER': 'votre_nom_d_utilisateur',
+        'PASSWORD': 'votre_mot_de_passe',
+        'HOST': 'nom_de_votre_serveur.database.windows.net',
+        'PORT': '',  # Vous pouvez laisser ce champ vide pour utiliser le port par défaut
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',  # Assurez-vous que le driver est installé
+            'extra_params': 'TrustServerCertificate=yes;'
+        },
+    }
+}
+```
+
+3. Remplacez les valeurs par vos informations spécifiques (nom de la base de données, nom d'utilisateur, mot de passe et nom du serveur).
+
+### Étape 5 : Installer le driver ODBC pour SQL Server
+
+Assurez-vous que le **driver ODBC** nécessaire est installé. Pour cela, vous pouvez installer le driver `ODBC Driver 17 for SQL Server` comme suit :
+
+- **Sur Windows** : Téléchargez-le depuis [Microsoft ODBC Driver 17](https://docs.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server).
+- **Sur Linux/Mac** : Suivez les instructions de [Microsoft pour installer le driver ODBC](https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/install-odbc-driver-for-sql-server).
+
+### Étape 6 : Appliquer les migrations
+
+Django utilise des migrations pour créer des tables dans votre base de données. Après avoir configuré correctement votre base de données dans `settings.py`, vous pouvez appliquer les migrations.
+
+1. Exécutez les migrations pour créer les tables Django dans votre base de données Azure SQL :
+
+```bash
+python manage.py migrate
+```
+
+2. Vérifiez que tout s'est bien passé. Si des erreurs surviennent, elles sont souvent liées à des problèmes de connexion à la base de données, à des paramètres incorrects dans `settings.py`, ou au manque de certains drivers ODBC.
+
+### Étape 7 : Testez la connexion
+
+Lancez votre serveur Django localement pour tester la connexion à la base de données :
+
+```bash
+python manage.py runserver
+```
+
+Si tout est bien configuré, Django devrait se connecter à la base de données Azure SQL et exécuter correctement les requêtes.
+
+### Étape 8 : Configuration du pare-feu Azure (si nécessaire)
+
+Si vous rencontrez des problèmes de connexion (erreurs liées à un pare-feu), vérifiez les règles de pare-feu de votre serveur SQL sur Azure.
+
+1. Dans le portail Azure, accédez à votre serveur SQL.
+2. Allez dans la section "Firewall and virtual networks".
+3. Ajoutez l'adresse IP de votre machine locale à la liste des règles autorisées.
+
+### Conclusion
+
+Votre projet Django devrait maintenant être connecté à Azure SQL Server. Vous pouvez continuer à développer votre projet, et toutes les données seront stockées dans la base de données Azure SQL.
+
+Si vous avez des questions ou rencontrez des problèmes, n’hésitez pas à demander !
