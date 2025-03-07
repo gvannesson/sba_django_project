@@ -1,19 +1,39 @@
-{%for client in clients%}
-    <p>
-        <tr>
-            <td >{{ client.id }}</td>
-            <td >{{ client.company_name }}</td>
-            <td >{{ client.state }}</td>
-            <td >{{ client.NAICS }}</td>
-            <td >{{ client.email }}</td>
+{% extends "base.html" %}
 
-            <td >{{ client.franchisecode }}</td>
-            <td >{{ client.role}}</td>
-            <td>
-                <a href="{% url 'delete_user' client.id %}" class="btn btn-danger">Supprimer</a>
-            </td>            <td>
-                <a href="{% url 'account_update' client.id %}" class="btn btn-danger">Modifier</a>
-            </td>
+{% block content %}
+<div class="container mx-auto mt-10">
+  <div class="overflow-x-auto">
+    <table class="min-w-full border border-primary-color rounded-lg">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="px-4 py-2 border border-primary-color">ID</th>
+          <th class="px-4 py-2 border border-primary-color">Company Name</th>
+          <th class="px-4 py-2 border border-primary-color">State</th>
+          <th class="px-4 py-2 border border-primary-color">NAICS</th>
+          <th class="px-4 py-2 border border-primary-color">Email</th>
+          <th class="px-4 py-2 border border-primary-color">Franchise Code</th>
+          <th class="px-4 py-2 border border-primary-color">Nb Employees</th>
+          <th class="px-4 py-2 border border-primary-color">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for client in clients %}
         <tr>
-    </p>
-{% endfor %}
+          <td class="px-4 py-3 border border-primary-color">{{ client.id }}</td>
+          <td class="px-4 py-3 border border-primary-color">{{ client.company_name }}</td>
+          <td class="px-4 py-3 border border-primary-color">{{ client.state }}</td>
+          <td class="px-4 py-3 border border-primary-color">{{ client.NAICS }}</td>
+          <td class="px-4 py-3 border border-primary-color">{{ client.email }}</td>
+          <td class="px-4 py-3 border border-primary-color">{{ client.franchisecode }}</td>
+          <td class="px-4 py-3 border border-primary-color">{{ client.no_emp }}</td>
+          <td class="px-4 py-3 border border-primary-color">
+            <a href="{% url 'delete_user' client.id %}" class="btn btn-danger mr-2">Supprimer</a>
+            <a href="{% url 'company_info_update' client.id %}" class="btn btn-danger">Modifier</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock content %}

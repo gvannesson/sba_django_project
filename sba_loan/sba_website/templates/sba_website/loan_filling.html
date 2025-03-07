@@ -1,10 +1,31 @@
-{% block content%}
-<p>id ={{object.id}}</p>
+{% extends "base.html" %}
+{% load widget_tweaks %}
 
-    <form method="post" action="">
-        {% csrf_token %}
-        {{form.as_p}}
-        <button type='submit'>Rechercher</button>
-    </form>
-    
-{%endblock%}
+{% block content %}
+<div class="container mx-auto mt-10">
+  <p class="mb-4 font-bold">Loan n°{{ object.id }}</p>
+
+  <form method="post" action="" class="mb-10 flex flex-col items-center">
+    {% csrf_token %}
+    <div class="w-full max-w-lg flex flex-col items-start">
+      {% for field in form %}
+        <div class="mb-4 flex justify-between items-center w-[75%]">
+          <label for="{{ field.id_for_label }}" class="primary-color font-bold text-left">
+            {{ field.label }} :
+          </label>
+          <div>
+            {{ field|add_class:"p-2 border border-blue-500 rounded" }}
+            {% for error in field.errors %}
+              <p class="text-red-500 text-sm">{{ error }}</p>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div>
+    <button class="btn mt-4" type="submit">Submit</button>
+    <button class="btn mt-4"><a href={% url "select_loan_request" %}>Cancel</a></button>
+  </form>
+</div>
+</div>
+{% endblock %}

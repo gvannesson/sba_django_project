@@ -1,8 +1,8 @@
-from django.urls import path
-from .views import HomeView,ClientView, NewsView,CreateNewsView,NewsDeleteView,NewsUpdateView
+from django.urls import path, reverse_lazy
+from .views import HomeView,ClientView, NewsView,CreateNewsView,NewsDeleteView,NewsUpdateView, CustomPassWordChangeView
 from django.contrib.auth.views import LoginView, LogoutView
 from .views import HomeView, DisplayProfileView, CreateUserViews
-from .views import DeleteUserView, AccountUpdateView, CreateLoanRequestView, FillLoanRequestView, LoanListViews, PredictLoanView
+from .views import DeleteUserView, AccountUpdateView, CreateLoanRequestView, FillLoanRequestView, LoanListViews, PredictLoanView, CompanyUpdateView
 
 
 urlpatterns = [
@@ -14,7 +14,9 @@ urlpatterns = [
     path('login/', LoginView.as_view(template_name='sba_website/login.html'), name='login'),
     path ("logout/", LogoutView.as_view(), name="logout"),
     path("delete_user/<int:pk>/", DeleteUserView.as_view(), name='delete_user'), 
+    path ("<int:pk>/update/", CompanyUpdateView.as_view(), name="company_info_update"),
     path ("<int:pk>/acc_update/", AccountUpdateView.as_view(), name="account_update"),
+    path('password_change/', CustomPassWordChangeView.as_view(success_url=reverse_lazy('login')), name='password_change'),
     path ("<int:pk>/news_update/", NewsUpdateView.as_view(), name="news_update"),
     path('profile/', DisplayProfileView.as_view(), name='display_profile'),
     path('loan_list/', LoanListViews.as_view(), name='select_loan_request'),

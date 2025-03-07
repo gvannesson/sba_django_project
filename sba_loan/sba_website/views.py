@@ -7,7 +7,8 @@ from django.shortcuts import render
 from .models import User, LoanRequest
 from django.views.generic import TemplateView, ListView, CreateView, DeleteView, UpdateView, FormView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CustomCreationForm, AccountChangeForm, LoanRequestAdvisorForm, LoanRequestForm, SelectLoanRequest
+from .forms import CustomCreationForm, AccountChangeForm, LoanRequestAdvisorForm, LoanRequestForm, SelectLoanRequest, CompanyInfoChangeForm
+from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
@@ -285,7 +286,7 @@ class LoanListViews(ListView, FormView):
         query_company = self.request.GET.get('search_by_company_name')
         query_amount = self.request.GET.get('search_by_amount')
         query_status = self.request.GET.get('search_by_status')
-        result = LoanRequest.objects.all()
+        result = LoanRequest.objects.all().select_related('user_id')
         if query_company:
             result =  result.filter(user_id= User.objects.get(company_name=query_company).id)
         if query_amount:
@@ -294,6 +295,11 @@ class LoanListViews(ListView, FormView):
             result = result.filter(status=query_status)
         return result
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add the form instance to the context so your template can render it.
+        context['form'] = self.get_form()
+        return context
 
 
 class PredictLoanView(DetailView):
@@ -490,10 +496,10 @@ class NewsUpdateView(UpdateView, LoginRequiredMixin):
         Lorsqu'un utilisateur ayant un rôle approprié modifie un article de news, la vue permet de mettre à jour les informations de l'article et redirige ensuite l'utilisateur vers la liste des articles de news après la mise à jour.
     """
 
-    model = User  # Le modèle que l'on souhaite mettre à jour
+    model = News  # Le modèle que l'on souhaite mettre à jour
     form_class=NewsChangeForm
     template_name = 'sba_website/news_update.html'  # Le template à utiliser pour le formulaire
-    success_url = reverse_lazy('new_list')  # L'URL vers laquelle rediriger après la mise à jour réussie
+    success_url = reverse_lazy('news_list')  # L'URL vers laquelle rediriger après la mise à jour réussie
 
 
     def dispatch(self, request, *args, **kwargs):
@@ -502,4 +508,22 @@ class NewsUpdateView(UpdateView, LoginRequiredMixin):
             return redirect('/profile/') #renvoie sur cet url si l'utilisateur ne remplit pas la condition is_staff
         return super().dispatch(request, *args, **kwargs)
 
+class CustomPassWordChangeView(PasswordChangeView):
+    success_url = reverse_lazy("password_change_done")
+    template_name = "sba_website/password_change.html"
+    title = ("Password change")
 
+class CompanyUpdateView(UpdateView, LoginRequiredMixin):
+    model = User
+    form_class=CompanyInfoChangeForm
+    template_name = 'sba_website/company_info_update.html'
+    
+    def form_valid(self, form):
+        form.save()
+        user = self.request.user
+        if user.role == 1:
+            return redirect('clients_list')
+        else:
+            return redirect('display_profile') 
+    
+    
