@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'chat',
     'tailwind',
     'theme',
+    'widget_tweaks',
     'django_browser_reload',
     'django.contrib.admin',
     'django.contrib.auth',

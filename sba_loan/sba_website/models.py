@@ -154,4 +154,4 @@ class News(models.Model):
     date_news = models.DateTimeField(null=True)
     content = models.TextField()
     publication_date = models.DateTimeField(default=timezone.now)
-    news_url = models.URLField(max_length=200)
+    news_url = models.URLField(max_length=200, blank=True)
