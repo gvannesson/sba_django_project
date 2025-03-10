@@ -28,9 +28,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 AUTH_USER_MODEL = 'sba_website.User'
 
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -89,8 +90,6 @@ WSGI_APPLICATION = 'sba_loan.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-
-print("PRINT : ", os.getenv("DB_NAME"), os.getenv("DB_USERNAME"), os.getenv("DB_PASSWORD"),os.getenv("DB_HOST"))
 
 DATABASES = {
     'default': {
@@ -181,4 +180,10 @@ CHANNEL_LAYERS = {
 TAILWIND_APP_NAME = 'theme'
 INTERNAL_IPS = {
     "127.0.0.1",
+}
+
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
 }
