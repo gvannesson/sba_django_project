@@ -36,7 +36,7 @@ def login():
 
 def make_prediction(data:dict):
     
-    if os.getenv("DEBUG") == True:
+    if os.getenv("DEBUG") == 'True':
         token = os.getenv("TOKEN")
     else:
         token = os.environ.get("ACCESS_TOKEN")
