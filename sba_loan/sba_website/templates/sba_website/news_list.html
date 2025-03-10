@@ -1,20 +1,42 @@
-{%for new in news%}
-    <p>
+{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto mt-10">
+  <div class="overflow-x-auto">
+    <table class="table-auto border border-primary-color rounded-lg">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="px-4 py-3 border border-primary-color">ID</th>
+          <th class="px-4 py-3 border border-primary-color">Topic</th>
+          <th class="px-4 py-3 border border-primary-color">Publication Date</th>
+          <th class="px-4 py-3 border border-primary-color">Content</th>
+          <th class="px-4 py-3 border border-primary-color">News URL</th>
+          <th class="px-4 py-3 border border-primary-color">Author ID</th>
+          {% if user.role == 1 or user.is_superuser %}
+            <th class="w-auto whitespace-nowrap px-4 py-3 border border-primary-color">Actions</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for new in news %}
         <tr>
-            <td >{{ new.id }}</td>
-            <td >{{ new.items }}</td>
-            <td >{{ new.date_news }}</td>
-            <td >{{ new.content }}</td>
-            <td ><a href={{ new.news_url }}>{{ new.news_url }}</a></td>
-            <td>{{new.user_id_id}}</td>
-            {% if user.role == 1 or user.is_superuser %}
-            <td>
-                <a href="{% url 'delete_news' new.id %}" class="btn btn-danger">Supprimer</a>
+          <td class="px-4 py-3 border border-primary-color">{{ new.id }}</td>
+          <td class="px-4 py-3 border border-primary-color">{{ new.topic }}</td>
+          <td class="px-4 py-3 border border-primary-color">{{ new.date_news }}</td>
+          <td class="px-4 py-3 border border-primary-color">{{ new.content }}</td>
+          <td class="px-4 py-3 border border-primary-color">
+            <a href="{{ new.news_url }}" class="text-blue-600 hover:underline">{{ new.news_url }}</a>
+          </td>
+          <td class="px-4 py-3 border border-primary-color">{{ new.user_id_id }}</td>
+          {% if user.role == 1 or user.is_superuser %}
+            <td class="w-auto whitespace-nowrap px-4 py-3 border border-primary-color">
+              <a href="{% url 'delete_news' new.id %}" class="btn btn-danger mr-2">Supprimer</a>
+              <a href="{% url 'news_update' new.id %}" class="btn btn-danger">Modifier</a>
             </td>
-            <td>
-                <a href="{% url 'news_update' new.id %}" class="btn btn-danger">Modifier</a>
-            </td>
-            {% endif %}
-        <tr>
-    </p>
-{% endfor %}
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock content %}

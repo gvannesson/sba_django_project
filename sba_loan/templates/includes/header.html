@@ -26,7 +26,7 @@
 
     <nav>
         {% if user.is_authenticated %}
-        <p class="mr-4">Hello <strong class="name">{{ user.username }}</strong>!</p>
+        <p class="mr-4">Hello <strong class="name">{{ user.company_name }}</strong>!</p>
             <form method="get" class="inline" action="{% url 'display_profile' %}">
                 <button class='btn' type="submit">Account</button>
             </form>

@@ -22,6 +22,13 @@ class CreateNews(forms.ModelForm):
         model = News
         fields = ['topic','date_news','content','news_url', 'publication_date']
         widgets = {'date_news': forms.DateInput(format="%Y-%m-%d", attrs={'type': 'date'})}
+        labels = {
+            'topic': "Topic",
+            'date_news': 'Date of publication',
+            'content': 'Content',
+            'news_url': 'External url (Optional)',
+            'publication_date': 'Current date'
+        }
 
 class NewsChangeForm(forms.ModelForm):
     """
@@ -35,6 +42,11 @@ class NewsChangeForm(forms.ModelForm):
     class Meta:
         model = News
         fields = ['date_news','news_url','content','topic'] 
+        labels = {
+            'date_news': 'Publication date',
+            'news_url': 'External url',
+            
+        }
 
 
 class CustomCreationForm(UserCreationForm):
@@ -79,6 +91,10 @@ class LoanRequestForm(forms.ModelForm):
     class Meta:
         model = LoanRequest
         fields = ['bank_loan', 'reason'] #les champs mis à jour lors de l'update du profil
+        labels= {
+            'bank_loan': 'Amount requested ($)',
+            'reason': 'Reason for the loan'
+        }
 
 
 class LoanRequestAdvisorForm(forms.ModelForm):
@@ -92,7 +108,12 @@ class LoanRequestAdvisorForm(forms.ModelForm):
     """
     class Meta:
         model = LoanRequest
-        fields = ['lowdoc', 'sba_loan', 'revlinecr', 'term'] #les champs mis à jour lors de l'update du profil
+        fields = ['lowdoc', 'sba_loan', 'term'] #les champs mis à jour lors de l'update du profil
+        labels = {
+            'lowdoc': 'Low documentation',
+            'sba_loan' : 'Amount guaranteed by SBA ($)',
+            'term' : 'Loan terms (months)'
+        }
 
 class SelectLoanRequest(forms.Form):
 
@@ -108,3 +129,8 @@ class SelectLoanRequest(forms.Form):
     search_by_company_name = forms.ModelChoiceField(label="Company name", queryset=User.objects.values_list('company_name', flat=True).distinct() , required=False)
     search_by_amount = forms.IntegerField(label="Amount", required=False)
     search_by_status = forms.IntegerField(label="Status", required=False)
+    
+class CompanyInfoChangeForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['company_name','state', 'NAICS', 'urbanrural', 'no_emp'] #les champs mis à jour lors de l'update du profil
