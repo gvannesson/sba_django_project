@@ -20,7 +20,7 @@
                     <h5 class="text-lg font-semibold text-[#1c2b36] mb-2">{{ article.title }}</h5>
                     <p class="text-gray-400 text-sm">Written by {{ article.user_id }} on {{ article.publication_date|date:"d/m/Y" }}</p>
                     <p class="text-sm text-[#5e6c7e] mb-4 text-center">{{ article.content|truncatewords:20 }}</p>
-                    <a href="{{ article.news_url }}" class="bg-deepblue text-white py-2 px-6 rounded-lg hover:bg-skyblue transition duration-300">
+                    <a href="{{ article.news_url }}" class="btn bg-deepblue text-white py-2 px-6 rounded-lg hover:bg-skyblue transition duration-300">
                         Read More
                     </a>
                 </div>

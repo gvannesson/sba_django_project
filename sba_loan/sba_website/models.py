@@ -90,8 +90,8 @@ class User(AbstractUser):
         ('1', 'Urban'),
         ('0', 'Rural'),
     ]
-    urbanrural = models.CharField(max_length=1, choices=URBAN_RURAL_CHOICES, null=True)
-    franchisecode = models.PositiveIntegerField(max_length=50, null=True, default=0)
+    urbanrural = models.CharField(max_length=1, choices=URBAN_RURAL_CHOICES, null=True, default='0')
+    franchisecode = models.PositiveIntegerField(null=True, default='0')
     role = models.IntegerField(null=True, default=0) # 0 = company , 1 = advisor
     no_emp = models.PositiveIntegerField(verbose_name="Number of employees", null=True, default=0)
     username = models.CharField(max_length=100,blank=True)
@@ -154,4 +154,4 @@ class News(models.Model):
     date_news = models.DateTimeField(null=True)
     content = models.TextField()
     publication_date = models.DateTimeField(default=timezone.now)
-    news_url = models.URLField(max_length=200)
+    news_url = models.URLField(max_length=200, blank=True)

@@ -1,15 +1,29 @@
-<h2 class="my-3 text-center text-3xl font-bold tracking-tight text-gray-900">
-    Sign up for an account
-</h2>
+{% extends "base.html" %}
 
-{%block content%}
-<p>Bonjour {{user.email}}</p>
-<p>Bonjour {{user.id}}</p>
-<p>Bonjour {{user}}</p>
-<p>Bonjour {{user.company_name}}</p>
-<form method="post">
-    {%csrf_token%}
-    {{ form.as_p}}
-    <button type='submit'>Register</button>
-</form>
-{%endblock%}
+{% block content %}
+<div class="flex flex-col items-center mt-10">
+    <span>Bonjour <span class="primary-color font-bold">{{ user.company_name }}</span>.</span>
+
+    <div class="min-w-[300px] max-w-sm mt-10 p-4 shadow-md rounded-lg border-t-2 border-green-700 mx-auto">
+        <div class="flex justify-between pb-4 border-b">
+            <p class="font-bold text-xl primary-color">Loan Request</p>
+        </div>
+
+        <div class="flex flex-col pl-1">
+            <form method="post" class="space-y-4"> <!-- ✅ Adds spacing between form elements -->
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type='submit' class="btn w-full mt-4">Submit request</button> <!-- ✅ Adds space above Submit -->
+            </form>
+        </div>
+
+        <!-- ✅ Divider Line -->
+        <hr class="my-5 border-t border-gray-300"> <!-- Adds a horizontal line -->
+
+        <ul class="mb-2 flex flex-col items-center gap-5">
+            <li><a href="{% url 'display_profile' %}" class="btn">Cancel</a></li>     
+        </ul>            
+    </div>
+</div>
+{% endblock %}
+

@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-c4v#0i(a=oiv*%2qusq6-mfa2xo^(41s-h5&x=7sm7j2(656)g'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'chat',
     'tailwind',
     'theme',
+    'widget_tweaks',
     'django_browser_reload',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -86,6 +87,9 @@ WSGI_APPLICATION = 'sba_loan.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
+print("PRINT : ", os.getenv("DB_NAME"), os.getenv("DB_USERNAME"), os.getenv("DB_PASSWORD"),os.getenv("DB_HOST"))
+
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
@@ -100,6 +104,15 @@ DATABASES = {
         },
     }
 }
+
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
