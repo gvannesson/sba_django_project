@@ -328,11 +328,9 @@ class PredictLoanView(DetailView):
     model = LoanRequest
     template_name = 'predict_loan.html'  # Nom de votre template
     context_object_name = 'loan'  # Nom du contexte utilisé dans le template
-
     def post(self, request, *args, **kwargs):
         loan = self.get_object()  # Récupère le prêt à partir de l'ID dans l'URL
         user = loan.user_id
-        print(user)
         data = {
                 "state": user.state,
                 "term": loan.term,
@@ -345,7 +343,6 @@ class PredictLoanView(DetailView):
                 "lowdoc": bool(loan.lowdoc),
                 "bank": "NEW JERSEY ECONOMIC DEVEL"
                 }
-        print(data)
         loan.prediction_result = api_handler.make_prediction(data=data)
         loan.status = 3
         loan.save()

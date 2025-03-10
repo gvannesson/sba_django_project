@@ -19,7 +19,6 @@ def login():
         "password": password
     }
 
-    print("DATA : ", data)
     response = requests.post(url, data=data)
     if response.status_code == 200:
         print("Réponse de l'API :")
@@ -35,7 +34,6 @@ def login():
 def make_prediction(data:dict):
     
     token = os.getenv("TOKEN")
-    
     if not token:
         token = login()
     

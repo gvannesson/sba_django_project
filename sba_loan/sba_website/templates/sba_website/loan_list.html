@@ -34,7 +34,7 @@
           <th class="px-4 py-3 border border-primary-color">Client</th>
           <th class="px-4 py-3 border border-primary-color">Reason</th>
           <th class="px-4 py-3 border border-primary-color">Amount</th>
-          <th class="px-4 py-3 border border-primary-color">Actions</th>  
+          <th class="px-4 py-3 border border-primary-color">Prediction</th>  
         </tr>
       </thead>
       <tbody>
@@ -56,6 +56,12 @@
               <input type="hidden" name="loan_id" value="{{ loan.id }}">
               <button type="submit" class="btn">Predict</button>
             </form>
+            {% elif loan.status == 3 %}
+              {% if loan.prediction_result == "['P I F']" %}
+                <p class="text-green-500">{{ loan.prediction_result }}</p>
+              {% else %}
+                <p class="text-red-500">{{ loan.prediction_result }}</p>
+              {% endif %}
             {% else %}
                 <a class="btn" href="/loan_filling/{{ loan.id }}">Fill prediction info</a>
             {% endif %}
