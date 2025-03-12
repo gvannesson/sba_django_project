@@ -14,7 +14,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
-print("MAKE SURE TO UPDATE .ENV BASE_URL FOR API URL.")
+print("MAKE SURE TO UPDATE .ENV API_URL FOR API URL.")
 load_dotenv(override=True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
