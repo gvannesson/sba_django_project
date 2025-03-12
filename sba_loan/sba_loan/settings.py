@@ -30,12 +30,13 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.getenv("LOCAL") == "0":
-    DEBUG = os.environ.get("DEBUG") == "0"
-else: 
-    DEBUG = os.getenv("DEBUG") == "1"
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+if os.getenv("LOCAL") == "0":
+    DEBUG = False
+else: 
+    DEBUG = True
+
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'sba_website.User'
 
@@ -102,10 +103,10 @@ WSGI_APPLICATION = 'sba_loan.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
-        'NAME':os.getenv('NAME'),
-        'USER':os.getenv('USER'),
-        'PASSWORD':os.getenv('PASSWORD'),
-        'HOST':os.getenv('HOST'),
+        'NAME':os.getenv('DB_NAME'),
+        'USER':os.getenv('DB_USERNAME'),
+        'PASSWORD':os.getenv('DB_PASSWORD'),
+        'HOST':os.getenv('DB_HOST'),
         'PORT': '',  # Laisser vide, Azure SQL utilise le port par défaut (1433)
         'OPTIONS': {
             'driver': 'ODBC Driver 18 for SQL Server',  # Spécifiez le driver installé
