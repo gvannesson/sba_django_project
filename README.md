@@ -48,15 +48,22 @@ source env/bin/activate  # On Windows use: env\Scripts\activate
 pip install -r requirements.txt
 ```
 
-5. **Apply migrations and run the server**
+5. **Create your .env file**
+
+Set the environment keys in your env file.
+
+6. **Apply migrations, collect staticfiles and run the server**
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
+python manage.py tailwind install
+python manage.py tailwind start
+python manage.py collectstatic
 python manage.py runserver
 ```
 
-6. **Access the application**
+7. **Access the application**
 
 Open a browser and go to `http://127.0.0.1:8000/`
 
@@ -80,6 +87,10 @@ Follow the prompts and then log in at `http://127.0.0.1:8000/admin`
 
 The project is containerized for easy deployment. To build and run the Docker container:
 
+### Configure compose.yaml
+
+Configure the compose.yaml file with your image name and desired port.
+
 ### Build the Docker Image
 
 ```bash
@@ -96,7 +107,7 @@ Your API should now be accessible at http://localhost:8000/.
 
 ## Deployment on Azure
 
-For deploying to Azure Container Instances (ACI) or another cloud platform, you can use the provided shell script deploy.sh along with environment variable management (e.g., through Docker Compose or Azure CLI). Make sure to adjust resource allocation and networking settings as needed for production workloads.
+For deploying to Azure Container Instances (ACI) or another cloud platform, you can use the provided shell script deploy.sh along with environment variable management (e.g., through Docker Compose or Azure CLI). Make sure to properly configure your Azure variable in the script such as your registry name. Make sure to adjust resource allocation and networking settings as needed for production workloads.
 
 ## Authors
 
