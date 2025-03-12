@@ -12,7 +12,7 @@ def login():
     if not username or not password:
         raise Exception("Please set API_USERNAME and API_PASSWORD in your .env file")
     
-    url = os.getenv("BASE_URL")+"/api/login"
+    url = os.getenv("API_URL")+"/api/login"
     
     data = {
         "username": username,
@@ -50,7 +50,7 @@ def make_prediction(data:dict):
     
     try:
         response = requests.post(
-            f"{os.getenv("BASE_URL")}/api/loans/predict",
+            f"{os.getenv("API_URL")}/api/loans/predict",
             json=data,
             headers=headers
         )
@@ -65,7 +65,7 @@ def make_prediction(data:dict):
                 "Authorization": f"Bearer {token}"
             }
             response = requests.post(
-                f"{os.getenv("BASE_URL")}/api/loans/predict",
+                f"{os.getenv("API_URL")}/api/loans/predict",
                 json=data,
                 headers=headers
             )
