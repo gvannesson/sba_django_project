@@ -12,10 +12,10 @@ services:
       DJANGO_LOGLEVEL: ${DJANGO_LOGLEVEL}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
       DB_ENGINE: 'mssql'  # Utilisation de mssql pour SQL Server
-      DB_NAME: ${NAME}
-      DB_USERNAME: ${USERNAME}
-      DB_PASSWORD: ${PASSWORD}
-      DB_HOST: ${HOST}  # Utiliser l'adresse du serveur SQL Azure
-      DB_PORT: ${PORT}  # Par défaut, SQL Server utilise le port 1433
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}  # Utiliser l'adresse du serveur SQL Azure
+      DB_PORT: ${DB_PORT}  # Par défaut, SQL Server utilise le port 1433
     env_file:
       - .env
