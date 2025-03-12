@@ -1,9 +1,9 @@
 services:
   django-web:
     build: .
-    container_name: sba_django_container
+    container_name: XXXX #Configure your container name
     ports:
-      - "8000:8000"
+      - "XXXX:XXXX" #Configure your desired port
 
     environment:
       ACCESS_TOKEN: ''

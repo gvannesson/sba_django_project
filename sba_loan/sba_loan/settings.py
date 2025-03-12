@@ -36,7 +36,7 @@ if os.getenv("LOCAL") == "0":
 else: 
     DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'sba_website.User'
 
