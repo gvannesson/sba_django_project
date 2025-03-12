@@ -24,7 +24,7 @@ def login():
         print("Réponse de l'API :")
         print(response.json())
         token = response.json()["access_token"]
-        print("PRINT LOCAL : ", os.getenv("LOCAL"))
+        
         if os.getenv("LOCAL") != "0":
             set_key("../.env", "TOKEN", response.json()["access_token"])
         else:

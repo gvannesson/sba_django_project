@@ -19,7 +19,6 @@ echo $REGISTRY_PASSWORD
 echo "Authentification Azure..."
 
 
-
 # 4. Connexion à Azure Container Registry
 echo "Connexion à Azure Container Registry..."
 az acr login --name $ACR_NAME

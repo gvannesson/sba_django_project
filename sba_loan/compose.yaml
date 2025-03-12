@@ -4,7 +4,7 @@ services:
     build: .
     container_name: gvannesson-sba-loan-django-web
     ports:
-      - "8000:8000"
+      - "XXXX:XXXX" #Configure your desired port
 
     environment:
       ACCESS_TOKEN: ''
