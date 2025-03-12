@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<form method="post" class="mb-10 flex flex-col items-center">
+  {% csrf_token %}
+  <div class="w-full max-w-lg flex flex-col items-start">
+      {% for field in form %}
+          <div class="mb-4 flex justify-between items-center w-[75%]">
+              <label for="{{ field.id_for_label }}" class="primary-color font-bold text-left">
+                  {{ field.label }} :
+              </label>
+              <div class="">
+                  {{ field|add_class:"p-2 border border-blue-500 rounded" }}
+                  {% for error in field.errors %}
+                      <p class="text-red-500 text-sm">{{ error }}</p>
+                  {% endfor %}
+              </div>
+          </div>
+      {% endfor %}
+  </div>
+  <button class="btn mt-4" type="submit">Save</button>
+</form>
+  <div class="border-t border-black w-[25%] mx-auto"></div>
+  <div class="mt-10 mb-10">
+    <a href="{% url 'display_profile' %}" class="btn">Cancel</a>
+    <a href="{% url 'delete_user' user.id%}" class="btn">Delete my account</a>    
+  </div>
+{% endblock %}

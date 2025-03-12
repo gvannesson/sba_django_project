@@ -1,0 +1,22 @@
+services:
+  django-web:
+    build: .
+    container_name: sba_django_container
+    ports:
+      - "8000:8000"
+
+    environment:
+      ACCESS_TOKEN: ''
+      DJANGO_SECRET_KEY: ${SECRET_KEY}
+      DEBUG: 0
+      DJANGO_LOGLEVEL: ${DJANGO_LOGLEVEL}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      DB_ENGINE: 'mssql'  # Utilisation de mssql pour SQL Server
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}  # Utiliser l'adresse du serveur SQL Azure
+      DB_PORT: ${DB_PORT}  # Par défaut, SQL Server utilise le port 1433
+      LOCAL: 0
+    env_file:
+      - .env
