@@ -27,10 +27,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# SECURITY WARNING: don't run with debug turned on in production!
+
+if os.getenv("LOCAL") == "0":
+    DEBUG = False
+else: 
+    DEBUG = True
+
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'sba_website.User'
 
@@ -45,7 +51,6 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'widget_tweaks',
-    'django_browser_reload',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,6 +58,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+# if DEBUG == True:
+#     print("ADDING DJANGO_BROWSER_RELOAD")
+#     INSTALLED_APPS.append('django_browser_reload')
+#     print("INSTALLED_APPS : ", INSTALLED_APPS)
 
 MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -62,8 +72,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_browser_reload.middleware.BrowserReloadMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'sba_loan.urls'
@@ -94,10 +103,10 @@ WSGI_APPLICATION = 'sba_loan.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
-        'NAME':os.getenv('NAME'),
-        'USER':os.getenv('USER'),
-        'PASSWORD':os.getenv('PASSWORD'),
-        'HOST':os.getenv('HOST'),
+        'NAME':os.getenv('DB_NAME'),
+        'USER':os.getenv('DB_USERNAME'),
+        'PASSWORD':os.getenv('DB_PASSWORD'),
+        'HOST':os.getenv('DB_HOST'),
         'PORT': '',  # Laisser vide, Azure SQL utilise le port par défaut (1433)
         'OPTIONS': {
             'driver': 'ODBC Driver 18 for SQL Server',  # Spécifiez le driver installé

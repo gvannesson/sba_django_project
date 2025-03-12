@@ -24,7 +24,11 @@ def login():
         print("Réponse de l'API :")
         print(response.json())
         token = response.json()["access_token"]
-        set_key("../.env", "TOKEN", response.json()["access_token"])
+        
+        if os.getenv("LOCAL") != "0":
+            set_key("../.env", "TOKEN", response.json()["access_token"])
+        else:
+            os.environ["ACCESS_TOKEN"] = response.json()["access_token"]
         return token
     else:
         print(f"Erreur : {response.status_code}")
@@ -33,7 +37,10 @@ def login():
 
 def make_prediction(data:dict):
     
-    token = os.getenv("TOKEN")
+    if os.getenv("LOCAL") != "0":
+        token = os.getenv("TOKEN")
+    else:
+        token = os.environ.get("ACCESS_TOKEN")
     if not token:
         token = login()
     
