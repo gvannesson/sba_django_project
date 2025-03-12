@@ -32,7 +32,7 @@ cd sba_django_project
 2. **Checkout the correct branch**
 
 ```bash
-git checkout samuel
+git checkout main
 ```
 
 3. **Create and activate a virtual environment**
@@ -51,6 +51,7 @@ pip install -r requirements.txt
 5. **Apply migrations and run the server**
 
 ```bash
+python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
 ```
@@ -75,23 +76,27 @@ python manage.py createsuperuser
 
 Follow the prompts and then log in at `http://127.0.0.1:8000/admin`
 
-## Project Structure
+## Docker Deployment
 
+The project is containerized for easy deployment. To build and run the Docker container:
+
+### Build the Docker Image
+
+```bash
+docker build -t your_image_name .
 ```
-sba_django_project/
-├── manage.py
-├── requirements.txt
-├── project/                # Project settings
-│   ├── settings.py
-│   ├── urls.py
-│   └── ...
-├── core/                   # Core app
-│   ├── models.py
-│   ├── views.py
-│   ├── forms.py
-│   └── ...
-└── templates/              # HTML templates
+
+### Run the Container
+
+```bash
+docker run -d -p 8000:8000 your_image_name
 ```
+
+Your API should now be accessible at http://localhost:8000/.
+
+## Deployment on Azure
+
+For deploying to Azure Container Instances (ACI) or another cloud platform, you can use the provided shell script deploy.sh along with environment variable management (e.g., through Docker Compose or Azure CLI). Make sure to adjust resource allocation and networking settings as needed for production workloads.
 
 ## Authors
 
