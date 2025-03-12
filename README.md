@@ -48,11 +48,13 @@ source env/bin/activate  # On Windows use: env\Scripts\activate
 pip install -r requirements.txt
 ```
 
-5. **Apply migrations and run the server**
+5. **Apply migrations, collect staticfiles and run the server**
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
+python manage.py tailwind start
+python manage.py collectstatic
 python manage.py runserver
 ```
 
